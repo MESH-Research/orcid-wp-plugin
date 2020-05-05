@@ -1,12 +1,14 @@
 <?php
 define( 'MY_PLUGIN_PATH', plugin_dir_path( __DIR__ ) );
-define( 'ORCID_XSLT', MY_PLUGIN_PATH . 'xsl/orcid-data-works.xsl');
+define( 'ORCID_XSLT', MY_PLUGIN_PATH . 'orcid-data-works.xsl');
+define( 'ORCID_SITE', 'https://pub.orcid.org/');
+define( 'ORCID_API_VERSION', 'v2.0/');
 
 /*
  * download data from orcid.org
  */
 function download_orcid_data($orcid_id){
-    $orcidLink = "https://pub.orcid.org/v2.0/" . $orcid_id;
+    $orcidLink = ORCID_SITE . ORCID_API_VERSION . $orcid_id;
 
     $ch = curl_init() or exit("failed curl_init()");
     // curl_setopt($ch, CURLOPT_SSLVERSION, 6);
@@ -21,9 +23,9 @@ function download_orcid_data($orcid_id){
 }
 
 /*
- *
+ * format the orcid XML into HTML with XSLT
  */
-function format_orcid_xml_as_html($orcid_xml){
+function format_orcid_data_as_html($orcid_xml){
     $xmlDoc = new DOMDocument();
     $xmlDoc->loadXML($orcid_xml);
 
@@ -39,29 +41,34 @@ function format_orcid_xml_as_html($orcid_xml){
     return $orcid_html;
 }
 /*
- * wrapper function
+ * (OBSOLETE) wrapper function
  */
 function get_orcid_data($orcid_id)
 {
-    //
-    // download data from orcid.org
+    // get data from orcid.org
     $orcid_xml = download_orcid_data($orcid_id);
-    //
-    // format it as xml
-    $orcid_html = format_orcid_xml_as_html($orcid_xml);
+    // format as xml
+    $orcid_html = format_orcid_data_as_html($orcid_xml);
     return $orcid_html;
 }
 
 ?>
 <?php
-/**
+/*
+ * for testing
+ */
+
+/*
 $orcidID = "0000-0003-0265-9119"; // Alan Munn
 //$orcidID = "0000-0003-1822-3109";  // Bronson Hui
 //$orcidID = "0000-0002-8143-2408"; // Scott Schopieray
 //$orcidID = "0000-0003-3953-7940"; // Chris Long (U of CO at Boulder)
 //$orcidID = "0000-0002-5251-0307"; // Kathleen Fitzpatrick
 
-get_orcid_data($orcidID);
+//get_orcid_data($orcidID);
+$orcid_xml = download_orcid_data($orcidID);
+$orcid_html = format_orcid_data_as_html($orcid_xml);
+echo $orcid_html;
 */
 
 ?>

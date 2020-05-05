@@ -13,7 +13,7 @@
  */
 
 define( 'MY_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
-include( MY_PLUGIN_PATH . 'includes/orcid-functions.php');
+include( MY_PLUGIN_PATH . 'orcid-functions.php');
 
 //add_action( 'the_content', 'display_orcid_info' );
 //
@@ -157,7 +157,6 @@ function orcid_settings_form()
             <?php wp_nonce_field('orcid_nonce'); ?>
             <!-- need to replace table with CSS -->
             <table>
-                <!-- we don't neeb publication source -->
                 <tr>
                     <td><label for="orcid_id">ORCiD ID</label></td>
                     <td>
@@ -165,7 +164,6 @@ function orcid_settings_form()
                                value="<?php echo esc_attr__($orcid_id); ?>">
                     </td>
                 </tr>
-                <!-- we don't neeb publication source -->
                 <tr>
                     <td><input type="submit" name="submit" value="Save Settings" class="button-primary"/></td>
                 </tr>
@@ -175,8 +173,11 @@ function orcid_settings_form()
 
     <div class="wrap" id="orcid_wrapper">
         <?php
-        $orcid_data = get_orcid_data($orcid_id);
-        echo $orcid_data;
+        // get data from orcid.org
+        $orcid_xml = download_orcid_data($orcid_id);
+        // format as xml
+        $orcid_html = format_orcid_data_as_html($orcid_xml);
+        echo $orcid_html;
         ?>
     </div>
     <?php
