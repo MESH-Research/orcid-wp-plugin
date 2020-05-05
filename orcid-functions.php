@@ -6,6 +6,11 @@ define( 'ORCID_API_VERSION', 'v2.0/');
 
 /*
  * download data from orcid.org
+ *
+ * parameters:
+ * $orcid_id - ORCiD
+ *
+ * returns $orcid_xml - XML as string
  */
 function download_orcid_data($orcid_id){
     $orcidLink = ORCID_SITE . ORCID_API_VERSION . $orcid_id;
@@ -24,8 +29,12 @@ function download_orcid_data($orcid_id){
 
 /*
  * format the orcid XML into HTML with XSLT
+ *
+ * parameters:
+ * $orcid_xml - XML as string
+ * $display_sections - which sections of orcid data to display
  */
-function format_orcid_data_as_html($orcid_xml){
+function format_orcid_data_as_html($orcid_xml, $display_sections){
     $xmlDoc = new DOMDocument();
     $xmlDoc->loadXML($orcid_xml);
 
@@ -34,8 +43,15 @@ function format_orcid_data_as_html($orcid_xml){
 
     $htmlDoc = new XSLTProcessor();
 
-    $htmlDoc->setParameter('', 'display-personal', 'no');
-    $htmlDoc->setParameter('', 'display-education', 'no');
+    //
+    // control which sections are displayed
+    $htmlDoc->setParameter('', 'displayPersonal', $display_sections['displayPersonal']);
+    $htmlDoc->setParameter('', 'displayEducation', $display_sections['displayEducation']);
+    $htmlDoc->setParameter('', 'displayEmployment', $display_sections['displayEmployment']);
+    $htmlDoc->setParameter('', 'displayWorks', $display_sections['displayWorks']);
+    $htmlDoc->setParameter('', 'displayFundings', $display_sections['displayFundings']);
+    $htmlDoc->setParameter('', 'displayPeerReviews', $display_sections['displayPeerReviews']);
+
     $htmlDoc->importStylesheet($xslDoc);
     $orcid_html =  $htmlDoc->transformToXML($xmlDoc);
 
