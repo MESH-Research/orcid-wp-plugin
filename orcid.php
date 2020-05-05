@@ -83,7 +83,7 @@ add_action('admin_menu', 'orcid_create_menu');
 //schedule daily event to update publication lists
 function orcid_install()
 {
-    // want to use timeout , NOT daily update
+    // want to use caching and timeouts , NOT daily update
     // wp_schedule_event(current_time('timestamp'), 'daily', 'impactpubs_daily_update');
 }
 
@@ -155,7 +155,7 @@ function orcid_settings_form()
         <form method="POST" id="impactpubsForm">
             <!-- wp_nonce_field used for security -->
             <?php wp_nonce_field('orcid_nonce'); ?>
-            <!-- TODO: replace table with CSS -->
+            <!-- need to replace table with CSS -->
             <table>
                 <!-- we don't neeb publication source -->
                 <tr>
@@ -167,7 +167,6 @@ function orcid_settings_form()
                 </tr>
                 <!-- we don't neeb publication source -->
                 <tr>
-                    <td></td>
                     <td><input type="submit" name="submit" value="Save Settings" class="button-primary"/></td>
                 </tr>
             </table>

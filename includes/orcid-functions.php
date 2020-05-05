@@ -2,9 +2,11 @@
 define( 'MY_PLUGIN_PATH', plugin_dir_path( __DIR__ ) );
 define( 'ORCID_XSLT', MY_PLUGIN_PATH . 'xsl/orcid-data-works.xsl');
 
-function get_orcid_data($orcidID)
-{
-    $orcidLink = "https://pub.orcid.org/v2.0/" . $orcidID;
+/*
+ * download data from orcid.org
+ */
+function download_orcid_data($orcid_id){
+    $orcidLink = "https://pub.orcid.org/v2.0/" . $orcid_id;
 
     $ch = curl_init() or exit("failed curl_init()");
     // curl_setopt($ch, CURLOPT_SSLVERSION, 6);
@@ -12,11 +14,18 @@ function get_orcid_data($orcidID)
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_URL, $orcidLink);
 
-    $result = curl_exec($ch) or exit("unable to run curl_exec() with url ($orcidLink) ");
+    $orcid_xml = curl_exec($ch) or exit("unable to run curl_exec() with url ($orcidLink) ");
     curl_close($ch);
 
+    return $orcid_xml;
+}
+
+/*
+ *
+ */
+function format_orcid_xml_as_html($orcid_xml){
     $xmlDoc = new DOMDocument();
-    $xmlDoc->loadXML($result);
+    $xmlDoc->loadXML($orcid_xml);
 
     $xslDoc = new DOMDocument();
     $xslDoc->load(ORCID_XSLT);
@@ -25,9 +34,22 @@ function get_orcid_data($orcidID)
 
     $htmlDoc->setParameter('', 'display-personal', 'no');
     $htmlDoc->importStylesheet($xslDoc);
-    return $htmlDoc->transformToXML($xmlDoc);
+    $orcid_html =  $htmlDoc->transformToXML($xmlDoc);
 
-    
+    return $orcid_html;
+}
+/*
+ * wrapper function
+ */
+function get_orcid_data($orcid_id)
+{
+    //
+    // download data from orcid.org
+    $orcid_xml = download_orcid_data($orcid_id);
+    //
+    // format it as xml
+    $orcid_html = format_orcid_xml_as_html($orcid_xml);
+    return $orcid_html;
 }
 
 ?>
