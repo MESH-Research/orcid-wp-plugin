@@ -1,6 +1,6 @@
 <?php
 define( 'MY_PLUGIN_PATH', plugin_dir_path( __DIR__ ) );
-define( 'ORCID_XSLT', MY_PLUGIN_PATH . 'orcid-data-works.xsl');
+define( 'ORCID_XSLT', MY_PLUGIN_PATH . 'orcid-data-all.xsl');
 define( 'ORCID_SITE', 'https://pub.orcid.org/');
 define( 'ORCID_API_VERSION', 'v2.0/');
 
@@ -35,6 +35,7 @@ function format_orcid_data_as_html($orcid_xml){
     $htmlDoc = new XSLTProcessor();
 
     $htmlDoc->setParameter('', 'display-personal', 'no');
+    $htmlDoc->setParameter('', 'display-education', 'no');
     $htmlDoc->importStylesheet($xslDoc);
     $orcid_html =  $htmlDoc->transformToXML($xmlDoc);
 
