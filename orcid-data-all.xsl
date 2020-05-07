@@ -388,7 +388,7 @@
                 <!-- END: fundings -->
 
                 <!-- START: peer-reviews -->
-                <xsl:if test="$displayFundings='yes'">
+                <xsl:if test="$displayPeerReviews='yes'">
                 <h2>Peer Review and Service Activity</h2>
               <table border="1">
                 <tr bgcolor="#9acd32">
