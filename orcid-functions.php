@@ -4,35 +4,36 @@ define( 'ORCID_XSLT', MY_PLUGIN_PATH . 'orcid-data-all.xsl');
 define( 'ORCID_SITE', 'https://pub.orcid.org/');
 define( 'ORCID_API_VERSION', 'v2.0/');
 
-/*
+/**
  * download data from orcid.org
  *
  * parameters:
- * $orcid_id - ORCiD
+ * $orcid_id - ORCiD ID
  *
  * returns $orcid_xml - XML as string
  */
 function download_orcid_data($orcid_id){
-    $orcidLink = ORCID_SITE . ORCID_API_VERSION . $orcid_id;
+    $orcid_link = ORCID_SITE . ORCID_API_VERSION . $orcid_id;
 
     $ch = curl_init() or exit("failed curl_init()");
-    // curl_setopt($ch, CURLOPT_SSLVERSION, 6);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_URL, $orcidLink);
+    curl_setopt($ch, CURLOPT_URL, $orcid_link);
 
-    $orcid_xml = curl_exec($ch) or exit("unable to run curl_exec() with url ($orcidLink) ");
+    $orcid_xml = curl_exec($ch) or exit("unable to run curl_exec() with url ($orcid_link) ");
     curl_close($ch);
 
     return $orcid_xml;
 }
 
-/*
+/**
  * format the orcid XML into HTML with XSLT
  *
  * parameters:
  * $orcid_xml - XML as string
  * $display_sections - which sections of orcid data to display
+ *
+ * returns orcid_html (as string)
  */
 function format_orcid_data_as_html($orcid_xml, $display_sections){
     $xmlDoc = new DOMDocument();
@@ -57,7 +58,7 @@ function format_orcid_data_as_html($orcid_xml, $display_sections){
 
     return $orcid_html;
 }
-/*
+/**
  * (OBSOLETE) wrapper function
  */
 function get_orcid_data($orcid_id)

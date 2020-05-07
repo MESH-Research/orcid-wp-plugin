@@ -14,90 +14,65 @@
 
 define( 'MY_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 include( MY_PLUGIN_PATH . 'orcid-functions.php');
+define( 'ORCID_CACHE_TIMEOUT', 3600); // in seconds
 
 /************************
  * WORDPRESS HOOKS
  ************************/
 
-//
-// add actions to the (de)install activation hooks
-//
+/**
+ * add actions to the (de)install activation hooks
+ */
 register_activation_hook(__FILE__, 'orcid_install');
 register_deactivation_hook(__FILE__, 'orcid_uninstall');
 
 add_action('wp_enqueue_scripts', 'orcid_scripts');
 add_action('admin_enqueue_scripts', 'orcid_scripts');
-
 add_action('admin_menu', 'orcid_create_menu');
 
-// ++++++++++++++++++++++++++++++++++++++++++++
-//
-// - create an EVENT called: impactpubs_daily_update
-// - schedule it to run daily
-// - add an ACTION to this EVENT: impactpubs_update_lists
-// - this action updates the publication for for ALL users
-//
-// want to use timeout , NOT daily update
-//
-// add_action('impactpubs_daily_update', 'impactpubs_update_lists');
-// ++++++++++++++++++++++++++++++++++++++++++++
-
-// ++++++++++++++++++++++++++++++++++++++++++++
-//
-// shortcode
-//
-// see: https://www.smashingmagazine.com/2012/05/wordpress-shortcodes-complete-guide/
-// When a shortcode is inserted in a WordPress post or page,
-// it is replaced with some other content.
-// In other words, we instruct WordPress to find the macro
-// that is in square brackets ([]) and replace it with the
-// appropriate dynamic content, which is produced by a PHP function.
-//
-// - create a shortcode: publications
-// - set the function that gets called when the shortcode is used: impactpubs_display_pubs
-// - shortcodes can be called with arguments: [publications name=' . $user_ob->user_login . ']
-//
-// add_shortcode('publications', 'impactpubs_display_pubs');
-// ++++++++++++++++++++++++++++++++++++++++++++
-
-//installation procedures:
-//schedule daily event to update publication lists
+/**
+ * installation procedures:
+ * schedule daily event to update publication lists
+ */
 function orcid_install()
 {
-    // want to use caching and timeouts , NOT daily update
-    // wp_schedule_event(current_time('timestamp'), 'daily', 'impactpubs_daily_update');
+    // empty for now
 }
 
-// uninstallation procedures:
-// remove scheduled tasks
+/**
+ * uninstallation procedures:
+ * remove any scheduled tasks
+ */
 function orcid_uninstall()
 {
-    // wp_clear_scheduled_hook('impactpubs_daily_update');
+    // empty for now
 }
 
-// add javascript and stylesheets to both the admin page and front-end.
-// hooked by 'wp_enqueue_scripts' and 'admin_enqueue_scripts'
+/**
+ * add javascript and stylesheets to both the admin page and front-end.
+ * hooked by 'wp_enqueue_scripts' and 'admin_enqueue_scripts'
+ */
 function orcid_scripts()
 {
-    // wp_enqueue_style('ip_style', plugins_url('ip_style.css', __FILE__));
-    // wp_enqueue_script('ip_script', plugins_url('ip_script.js', __FILE__), array('jquery'), null, true);
+    // empty for now
+    // wp_enqueue_style('orcid_style', plugins_url('ip_style.css', __FILE__));
+    // wp_enqueue_script('orcid_script', plugins_url('ip_script.js', __FILE__), array('jquery'), null, true);
 }
 
-//create the admin menu
-//hooked by admin_menu event
+/**
+ * create the admin menu
+ * hooked by admin_menu event
+ */
 function orcid_create_menu()
 {
     add_menu_page('My ORCiD Retrieval and Display Information', 'My ORCiD Profile',
         'edit_posts', __FILE__, 'orcid_settings_form');
 }
 
-
-// create and handle the settings form
-// hooked by orcid_create_menu
-//
-// 1. process form submission if it has occured
-// 2. display the form
-// 3. below the form is where the results (or the error) gets displayed
+/**
+ * create and handle the settings form
+ * hooked by orcid_create_menu
+ */
 function orcid_settings_form()
 {
     $user_ob = wp_get_current_user();
@@ -111,7 +86,7 @@ function orcid_settings_form()
     // process a form submission if it has occurred
     if (isset($_POST['submit'])) {
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++
-        // what is: check_admin_referer('impactpubs_nonce')?
+        // check_admin_referer('orcid_nonce')?
         // this used for security to validate form data came from current site.
         // see: https://codex.wordpress.org/Function_Reference/check_admin_referer
         // nonce: https://wordpress.org/support/article/glossary/#nonce
@@ -119,39 +94,45 @@ function orcid_settings_form()
         check_admin_referer('orcid_nonce');
 
         $orcid_id = $_POST['orcid_id'];
+
         //
-        // if orcid_id hac changed we'll need to download new data from orcid
+        // we can either download the data from orcid.org OR use the cached value
+        // we download the data IFF ($download_from_orcid_flag = TRUE)
+        // 1) orcid_id has changed
+        // 2) there is no cached xml data
+        // 3) the cached value is older than ORCID_CACHE_TIMEOUT (in seconds)
+        //
+        $download_from_orcid_flag = FALSE;
+        //
+        // 1) orcid_id has changed
         $orcid_id_db = get_user_meta($user, '_orcid_id', TRUE);
         if($orcid_id !== $orcid_id_db){
             $download_from_orcid_flag = TRUE;
         }
         //
-        // no xml in the database
+        // 2) there is no cached xml data
         if(get_user_meta($user, '_orcid_xml', TRUE) == ''){
             $download_from_orcid_flag = TRUE;
         }
         //
-        // default values
-        /*
-        $display_sections['displayPersonal'] = 'no';
-        $display_sections['displayEducation'] = 'yes';
-        $display_sections['displayEmployment'] = 'yes';
-        $display_sections['displayWorks'] = 'yes';
-        $display_sections['displayFundings'] = 'no';
-        $display_sections['displayPeerReviews'] = 'no';
-        */
+        // 3) the cached value is older than ORCID_CACHE_TIMEOUT (in seconds)
+        $current_time = time();
+        // last download time
+        $orcid_xml_download_time = intval(get_user_meta($user, '_orcid_xml_download_time', TRUE));
         //
+        $time_diff = $current_time - $orcid_xml_download_time;
+        if($time_diff >= ORCID_CACHE_TIMEOUT){
+            $download_from_orcid_flag = TRUE;
+        }
+
         $display_sections['displayPersonal'] = $_POST['displayPersonal'];
         $display_sections['displayEducation'] = $_POST['displayEducation'];
         $display_sections['displayEmployment'] = $_POST['displayEmployment'];
         $display_sections['displayWorks'] = $_POST['displayWorks'];
         $display_sections['displayFundings'] = $_POST['displayFundings'];
         $display_sections['displayPeerReviews'] = $_POST['displayPeerReviews'];
-        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-        // for now we are not checking for validation errors
         update_user_meta($user, '_orcid_id', $orcid_id);
-        //
         update_user_meta($user, '_orcid_display_personal', $display_sections['displayPersonal']);
         update_user_meta($user, '_orcid_display_education', $display_sections['displayEducation']);
         update_user_meta($user, '_orcid_display_employment', $display_sections['displayEmployment']);
@@ -162,7 +143,6 @@ function orcid_settings_form()
     } else {
         // if no NEW data has been submitted, use values from the database as defaults in the form
         $orcid_id = get_user_meta($user, '_orcid_id', TRUE);
-        //
         $display_sections['displayPersonal'] = get_user_meta($user, '_orcid_display_personal', TRUE);
         $display_sections['displayEducation'] = get_user_meta($user, '_orcid_display_education', TRUE);
         $display_sections['displayEmployment'] = get_user_meta($user, '_orcid_display_employment', TRUE);
@@ -178,7 +158,7 @@ function orcid_settings_form()
         }
         ?>
         <form method="POST" id="orcidForm">
-            <!-- wp_nonce_field used for security -->
+            <!-- wp_nonce_field used for security (see above comment) -->
             <?php wp_nonce_field('orcid_nonce'); ?>
             <!-- need to replace table with CSS -->
             <table>
@@ -234,30 +214,17 @@ function orcid_settings_form()
 
     <div class="wrap" id="orcid_wrapper">
         <?php
-        /*********************************************************
-        echo $display_sections['displayPersonal'] . PHP_EOL;
-        echo $display_sections['displayEducation'] . PHP_EOL;
-        echo $display_sections['displayEmployment'] . PHP_EOL;
-        echo $display_sections['displayWorks'] . PHP_EOL;
-        echo $display_sections['displayFundings'] . PHP_EOL;
-        echo $display_sections['displayPeerReviews'] . PHP_EOL;
-        *********************************************************/
-        //
-        // if (xml entry is older than ORCID_CACHE_TIMEOUT) OR orcid_id has changed
-        // then -> download
-        // else -> use data from cache
-        // get data from orcid.org
         if($download_from_orcid_flag) {
+            // echo "<h4>Downloading XML data from orcid.org</h4>" . PHP_EOL;
             $orcid_xml = download_orcid_data($orcid_id);
             update_user_meta($user, '_orcid_xml', $orcid_xml);
+            //
+            // keep track of when download occurred
+            update_user_meta($user, '_orcid_xml_download_time', strval(time()));
         } else{
+            // echo "<h4>Using cached XML data</h4>" . PHP_EOL;
             $orcid_xml = get_user_meta($user, '_orcid_xml', TRUE);
         }
-        //
-        // save it
-        // format as xml
-        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-        //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
         $orcid_html = format_orcid_data_as_html($orcid_xml, $display_sections);
         echo $orcid_html;
