@@ -14,8 +14,8 @@
 
 define( 'MY_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 include( MY_PLUGIN_PATH . 'orcid-functions.php');
-define( 'ORCID_CACHE_TIMEOUT', 3600); // in seconds
-
+// in seconds
+define( 'ORCID_CACHE_TIMEOUT', 3600);
 /************************
  * WORDPRESS HOOKS
  ************************/
@@ -26,8 +26,8 @@ define( 'ORCID_CACHE_TIMEOUT', 3600); // in seconds
 register_activation_hook(__FILE__, 'orcid_install');
 register_deactivation_hook(__FILE__, 'orcid_uninstall');
 
-add_action('wp_enqueue_scripts', 'orcid_scripts');
-add_action('admin_enqueue_scripts', 'orcid_scripts');
+//add_action('wp_enqueue_scripts', 'orcid_scripts');
+//add_action('admin_enqueue_scripts', 'orcid_scripts');
 add_action('admin_menu', 'orcid_create_menu');
 
 /**
@@ -230,6 +230,6 @@ function orcid_settings_form()
         echo $orcid_html;
         ?>
     </div>
-    <?php
+<?php
 }
 ?>
