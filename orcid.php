@@ -125,30 +125,30 @@ function orcid_settings_form()
             $download_from_orcid_flag = TRUE;
         }
 
-        $display_sections['displayPersonal'] = $_POST['displayPersonal'];
-        $display_sections['displayEducation'] = $_POST['displayEducation'];
-        $display_sections['displayEmployment'] = $_POST['displayEmployment'];
-        $display_sections['displayWorks'] = $_POST['displayWorks'];
-        $display_sections['displayFundings'] = $_POST['displayFundings'];
-        $display_sections['displayPeerReviews'] = $_POST['displayPeerReviews'];
+        $display_sections['display_personal'] = $_POST['display_personal'];
+        $display_sections['display_education'] = $_POST['display_education'];
+        $display_sections['display_employment'] = $_POST['display_employment'];
+        $display_sections['display_works'] = $_POST['display_works'];
+        $display_sections['display_fundings'] = $_POST['display_fundings'];
+        $display_sections['display_peer_reviews'] = $_POST['display_peer_reviews'];
 
         update_user_meta($user, '_orcid_id', $orcid_id);
-        update_user_meta($user, '_orcid_display_personal', $display_sections['displayPersonal']);
-        update_user_meta($user, '_orcid_display_education', $display_sections['displayEducation']);
-        update_user_meta($user, '_orcid_display_employment', $display_sections['displayEmployment']);
-        update_user_meta($user, '_orcid_display_works', $display_sections['displayWorks']);
-        update_user_meta($user, '_orcid_display_fundings', $display_sections['displayFundings']);
-        update_user_meta($user, '_orcid_display_peer_reviews', $display_sections['displayPeerReviews']);
+        update_user_meta($user, '_orcid_display_personal', $display_sections['display_personal']);
+        update_user_meta($user, '_orcid_display_education', $display_sections['display_education']);
+        update_user_meta($user, '_orcid_display_employment', $display_sections['display_employment']);
+        update_user_meta($user, '_orcid_display_works', $display_sections['display_works']);
+        update_user_meta($user, '_orcid_display_fundings', $display_sections['display_fundings']);
+        update_user_meta($user, '_orcid_display_peer_reviews', $display_sections['display_peer_reviews']);
 
     } else {
         // if no NEW data has been submitted, use values from the database as defaults in the form
         $orcid_id = get_user_meta($user, '_orcid_id', TRUE);
-        $display_sections['displayPersonal'] = get_user_meta($user, '_orcid_display_personal', TRUE);
-        $display_sections['displayEducation'] = get_user_meta($user, '_orcid_display_education', TRUE);
-        $display_sections['displayEmployment'] = get_user_meta($user, '_orcid_display_employment', TRUE);
-        $display_sections['displayWorks'] = get_user_meta($user, '_orcid_display_works', TRUE);
-        $display_sections['displayFundings'] = get_user_meta($user, '_orcid_display_fundings', TRUE);
-        $display_sections['displayPeerReviews'] = get_user_meta($user, '_orcid_display_peer_reviews', TRUE);
+        $display_sections['display_personal'] = get_user_meta($user, '_orcid_display_personal', TRUE);
+        $display_sections['display_education'] = get_user_meta($user, '_orcid_display_education', TRUE);
+        $display_sections['display_employment'] = get_user_meta($user, '_orcid_display_employment', TRUE);
+        $display_sections['display_works'] = get_user_meta($user, '_orcid_display_works', TRUE);
+        $display_sections['display_fundings'] = get_user_meta($user, '_orcid_display_fundings', TRUE);
+        $display_sections['display_peer_reviews'] = get_user_meta($user, '_orcid_display_peer_reviews', TRUE);
     }
     ?>
     <div class="wrap">
@@ -173,34 +173,34 @@ function orcid_settings_form()
                 <tr><td>Display Sections</td>
                     <td>
                         <div>
-                        <input type="checkbox" id="displayPersonal" name="displayPersonal" value="yes"
-                            <?php if ($display_sections['displayPersonal'] == 'yes') echo 'checked'; ?> />
-                        <label for="displayPersonal">Personal</label>
+                        <input type="checkbox" id="display_personal" name="display_personal" value="yes"
+                            <?php if ($display_sections['display_personal'] == 'yes') echo 'checked'; ?> />
+                        <label for="display_personal">Personal</label>
                     </div>
                     <div>
-                        <input type="checkbox" id="displayEducation" name="displayEducation" value="yes"
-                            <?php if ($display_sections['displayEducation'] == 'yes') echo 'checked'; ?> />
-                        <label for="displayEducation">Education</label>
+                        <input type="checkbox" id="display_education" name="display_education" value="yes"
+                            <?php if ($display_sections['display_education'] == 'yes') echo 'checked'; ?> />
+                        <label for="display_education">Education</label>
                     </div>
                     <div>
-                        <input type="checkbox" id="displayEmployment" name="displayEmployment" value="yes"
-                            <?php if ($display_sections['displayEmployment'] == 'yes') echo 'checked'; ?> />
-                        <label for="displayEmployment">Employment</label>
+                        <input type="checkbox" id="display_employment" name="display_employment" value="yes"
+                            <?php if ($display_sections['display_employment'] == 'yes') echo 'checked'; ?> />
+                        <label for="display_employment">Employment</label>
                     </div>
                     <div>
-                        <input type="checkbox" id="displayWorks" name="displayWorks" value="yes"
-                        <?php if ($display_sections['displayWorks'] == 'yes') echo 'checked'; ?> />
-                        <label for="displayWorks">Works</label>
+                        <input type="checkbox" id="display_works" name="display_works" value="yes"
+                        <?php if ($display_sections['display_works'] == 'yes') echo 'checked'; ?> />
+                        <label for="display_works">Works</label>
                     </div>
                     <div>
-                        <input type="checkbox" id="displayFundings" name="displayFundings" value="yes"
-                            <?php if ($display_sections['displayFundings'] == 'yes') echo 'checked'; ?> />
-                        <label for="displayFundings">Fundings</label>
+                        <input type="checkbox" id="display_fundings" name="display_fundings" value="yes"
+                            <?php if ($display_sections['display_fundings'] == 'yes') echo 'checked'; ?> />
+                        <label for="display_fundings">Fundings</label>
                     </div>
                     <div>
-                        <input type="checkbox" id="displayPeerReviews" name="displayPeerReviews" value="yes"
-                            <?php if ($display_sections['displayPeerReviews'] == 'yes') echo 'checked'; ?> />
-                        <label for="displayPeerReviews">Peer Reviews</label>
+                        <input type="checkbox" id="display_peer_reviews" name="display_peer_reviews" value="yes"
+                            <?php if ($display_sections['display_peer_reviews'] == 'yes') echo 'checked'; ?> />
+                        <label for="display_peer_reviews">Peer Reviews</label>
                     </div>
                     </td>
 

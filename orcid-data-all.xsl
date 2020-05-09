@@ -25,13 +25,12 @@
 
   <!-- parameters -->
     <!-- NOTE: parameter values must be quoted if you want strings (and not XPath entries) -->
-    <!-- NOTE! DASHEs are NOT allowed in param names -->
-    <xsl:param name="displayPersonal" select="'yes'"/>
-    <xsl:param name="displayEducation" select="'yes'"/>
-    <xsl:param name="displayEmployment" select="'yes'"/>
-    <xsl:param name="displayWorks" select="'yes'"/>
-    <xsl:param name="displayFundings" select="'yes'"/>
-    <xsl:param name="displayPeerReviews" select="'yes'"/>
+    <xsl:param name="display_personal" select="'yes'"/>
+    <xsl:param name="display_education" select="'yes'"/>
+    <xsl:param name="display_employment" select="'yes'"/>
+    <xsl:param name="display_works" select="'yes'"/>
+    <xsl:param name="display_fundings" select="'yes'"/>
+    <xsl:param name="display_peer_reviews" select="'yes'"/>
     <!-- output format -->
     <xsl:output omit-xml-declaration="yes" indent="yes"/>
 
@@ -49,7 +48,7 @@
                 </h1>
 
                 <!-- START: personal -->
-                <xsl:if test="$displayPersonal='yes'">
+                <xsl:if test="$display_personal='yes'">
                     <h2>Personal Information</h2>
                     <!-- name -->
                     <xsl:if test="record:record/person:person/person:name">
@@ -144,7 +143,7 @@
                 <!-- END: personal -->
 
                 <!-- START: education -->
-                <xsl:if test="$displayEducation='yes'">
+                <xsl:if test="$display_education='yes'">
                 <h2>Education History</h2>
                 <table border="1">
                     <tr bgcolor="#9acd32">
@@ -210,7 +209,7 @@
                 <!-- END: education -->
 
                 <!-- START: employment -->
-                <xsl:if test="$displayEmployment='yes'">
+                <xsl:if test="$display_employment='yes'">
                 <h2>Employment History</h2>
                 <table border="1">
                     <tr bgcolor="#9acd32">
@@ -272,7 +271,7 @@
                 <!-- END: employmant -->
 
                 <!-- START: works (activities-group) -->
-                <xsl:if test="$displayWorks='yes'">
+                <xsl:if test="$display_works='yes'">
                 <h2>Academic Works History</h2>
                 <table border="1">
                     <tr bgcolor="#9acd32">
@@ -339,7 +338,7 @@
                 <!-- END: works -->
 
                 <!-- START: fundings -->
-                <xsl:if test="$displayFundings='yes'">
+                <xsl:if test="$display_fundings='yes'">
                 <h2>Funding Sources</h2>
                 <table border="1">
                   <tr bgcolor="#9acd32">
@@ -388,7 +387,7 @@
                 <!-- END: fundings -->
 
                 <!-- START: peer-reviews -->
-                <xsl:if test="$displayPeerReviews='yes'">
+                <xsl:if test="$display_peer_reviews='yes'">
                 <h2>Peer Review and Service Activity</h2>
               <table border="1">
                 <tr bgcolor="#9acd32">

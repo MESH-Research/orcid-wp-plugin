@@ -37,42 +37,32 @@ function download_orcid_data($orcid_id){
  * @return string orcid_html
  */
 function format_orcid_data_as_html($orcid_xml, $display_sections){
-    $xmlDoc = new DOMDocument();
-    $xmlDoc->loadXML($orcid_xml);
+    $xml_doc = new DOMDocument();
+    $xml_doc->loadXML($orcid_xml);
 
-    $xslDoc = new DOMDocument();
-    $xslDoc->load(ORCID_XSLT);
+    $xsl_doc = new DOMDocument();
+    $xsl_doc->load(ORCID_XSLT);
 
-    $htmlDoc = new XSLTProcessor();
+    $html_doc = new XSLTProcessor();
 
     //
     // control which sections are displayed
-    $htmlDoc->setParameter('', 'displayPersonal', $display_sections['displayPersonal']);
-    $htmlDoc->setParameter('', 'displayEducation', $display_sections['displayEducation']);
-    $htmlDoc->setParameter('', 'displayEmployment', $display_sections['displayEmployment']);
-    $htmlDoc->setParameter('', 'displayWorks', $display_sections['displayWorks']);
-    $htmlDoc->setParameter('', 'displayFundings', $display_sections['displayFundings']);
-    $htmlDoc->setParameter('', 'displayPeerReviews', $display_sections['displayPeerReviews']);
+    $html_doc->setParameter('', 'display_personal', $display_sections['display_personal']);
+    $html_doc->setParameter('', 'display_education', $display_sections['display_education']);
+    $html_doc->setParameter('', 'display_employment', $display_sections['display_employment']);
+    $html_doc->setParameter('', 'display_works', $display_sections['display_works']);
+    $html_doc->setParameter('', 'display_fundings', $display_sections['display_fundings']);
+    $html_doc->setParameter('', 'display_peer_reviews', $display_sections['display_peer_reviews']);
 
-    $htmlDoc->importStylesheet($xslDoc);
-    $orcid_html =  $htmlDoc->transformToXML($xmlDoc);
+    $html_doc->importStylesheet($xsl_doc);
+    $orcid_html =  $html_doc->transformToXML($xml_doc);
 
     return $orcid_html;
 }
 
-/*
- * for testing
- */
-
-/******************************************
-$orcidID = "0000-0003-0265-9119"; // Alan Munn
+// for testing
+//$orcidID = "0000-0003-0265-9119"; // Alan Munn
 //$orcidID = "0000-0003-1822-3109";  // Bronson Hui
 //$orcidID = "0000-0002-8143-2408"; // Scott Schopieray
 //$orcidID = "0000-0003-3953-7940"; // Chris Long (U of CO at Boulder)
 //$orcidID = "0000-0002-5251-0307"; // Kathleen Fitzpatrick
-
-//get_orcid_data($orcidID);
-$orcid_xml = download_orcid_data($orcidID);
-$orcid_html = format_orcid_data_as_html($orcid_xml);
-echo $orcid_html;
-******************************************/
