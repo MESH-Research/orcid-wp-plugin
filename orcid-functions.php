@@ -59,6 +59,113 @@ function format_orcid_data_as_html($orcid_xml, $display_sections){
     return $orcid_html;
 }
 
+/**
+ * Call back function for shortword [orcid-data section="section_name"]
+ *
+ * parameters:
+ * @param array $atts - contains the name of the section to display. if none is specified the header line is displayed
+ * @return string shortcode value
+ *
+ */
+function orcid_data_function($atts) {
+	//
+	// which section of the orcid data to display.
+	//if no section is specified display the header by default
+	extract(shortcode_atts(array('section' => 'header',), $atts));
+	//
+	// now we want to display the *author's* (not the viewer's) data
+
+	//
+	// get the author's WordPress user id
+	$author = get_the_author_meta('ID', false);
+
+	//
+	// get orcid data
+	//
+	// we can either download the data from orcid.org OR use the cached value
+	// we download the data IFF ($download_from_orcid_flag = TRUE)
+	// 1) there is no cached xml data
+	// 2) the cached value is older than ORCID_CACHE_TIMEOUT (in seconds)
+	//
+	$download_from_orcid_flag = FALSE;
+	//
+	// 2) there is no cached xml data
+	if(empty(get_user_meta($author, '_orcid_xml', TRUE))){
+		$download_from_orcid_flag = TRUE;
+	}
+	//
+	// 3) the cached value is older than ORCID_CACHE_TIMEOUT (in seconds)
+	$current_time = time();
+	// last download time
+	$orcid_xml_download_time = intval(get_user_meta($author, '_orcid_xml_download_time', TRUE));
+	//
+	$time_diff = $current_time - $orcid_xml_download_time;
+	if($time_diff >= ORCID_CACHE_TIMEOUT){
+		$download_from_orcid_flag = TRUE;
+	}
+
+	if($download_from_orcid_flag) {
+		// return '<p>Downloading XML data from orcid.org</p>' . PHP_EOL;
+		$orcid_id = get_user_meta($author, '_orcid_id', TRUE);
+		$orcid_xml = download_orcid_data($orcid_id);
+		update_user_meta($author, '_orcid_xml', $orcid_xml);
+		//
+		// keep track of when download occurred
+		update_user_meta($author, '_orcid_xml_download_time', strval(time()));
+	} else {
+		// return '<p>Using cached XML data</p>' . PHP_EOL;
+		// return '<p>author WP id = ' . intval($author) . '</p>';
+		// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		$orcid_xml = get_user_meta($author, '_orcid_xml', TRUE);
+	}
+	// $orcid_xml = get_user_meta($author, '_orcid_xml', TRUE);
+
+
+	//
+	// determine which section to display
+	if ($section == 'header') {
+		$display_sections['display_header'] = 'yes';
+	} else {
+		$display_sections['display_header'] = 'no';
+	}
+	if ($section == 'personal') {
+		$display_sections['display_personal'] = 'yes';
+	} else {
+		$display_sections['display_personal'] = 'no';
+	}
+	if ($section == 'education') {
+		$display_sections['display_education'] = 'yes';
+	} else {
+		$display_sections['display_education'] = 'no';
+	}
+	if ($section == 'employment') {
+		$display_sections['display_employment'] = 'yes';
+	} else {
+		$display_sections['display_employment'] = 'no';
+	}
+	if ($section == 'works') {
+		$display_sections['display_works'] = 'yes';
+	} else {
+		$display_sections['display_works'] = 'no';
+	}
+	if ($section == 'fundings') {
+		$display_sections['display_fundings'] = 'yes';
+	} else {
+		$display_sections['display_fundings'] = 'no';
+	}
+	if ($section == 'peer_reviews') {
+		$display_sections['display_peer_reviews'] = 'yes';
+	} else {
+		$display_sections['display_peer_reviews'] = 'no';
+	}
+	//
+	// format as HTML
+	$orcid_html = format_orcid_data_as_html($orcid_xml, $display_sections);
+	$return_string = $orcid_html;
+
+	return $return_string;
+}
+
 // for testing
 //$orcidID = "0000-0003-0265-9119"; // Alan Munn
 //$orcidID = "0000-0003-1822-3109";  // Bronson Hui

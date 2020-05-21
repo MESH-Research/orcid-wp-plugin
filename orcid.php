@@ -29,7 +29,7 @@ register_deactivation_hook(__FILE__, 'orcid_uninstall');
 add_action('admin_menu', 'orcid_create_menu');
 
 /**
- * installation procedures:
+ * install procedures:
  * schedule daily event to update publication lists
  */
 function orcid_install()
@@ -38,7 +38,7 @@ function orcid_install()
 }
 
 /**
- * uninstallation procedures:
+ * un-install procedures:
  * remove any scheduled tasks
  */
 function orcid_uninstall()
@@ -56,6 +56,20 @@ function orcid_scripts()
     // wp_enqueue_style('orcid_style', plugins_url('ip_style.css', __FILE__));
     // wp_enqueue_script('orcid_script', plugins_url('ip_script.js', __FILE__), array('jquery'), null, true);
 }
+
+/************************
+ * SHORTCODE HOOKS
+ ************************/
+/**
+ * register the shortcode
+ */
+function register_shortcodes(){
+	add_shortcode('orcid-data', 'orcid_data_function');
+}
+/**
+ * hook into WordPress
+ */
+add_action( 'init', 'register_shortcodes');
 
 /**
  * create the admin menu
@@ -118,7 +132,8 @@ function orcid_settings_form()
         }
         //
         // 2) there is no cached xml data
-        if(get_user_meta($user, '_orcid_xml', TRUE) == ''){
+        // empty($foo) is better than ($foo == '')
+        if(empty(get_user_meta($user, '_orcid_xml', TRUE))){
             $download_from_orcid_flag = TRUE;
         }
         //

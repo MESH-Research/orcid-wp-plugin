@@ -40,23 +40,19 @@
         <div id="orcid_data">
             <xsl:if test="$display_header='yes'">
                 <div id="orcid_header">
-                    <h3>
                         <xsl:value-of
                                 select="record:record/person:person/person:name/personal-details:given-names"/>
                         <xsl:text> </xsl:text>
                         <xsl:value-of
                                 select="record:record/person:person/person:name/personal-details:family-name"/>
                         <xsl:text> </xsl:text>
-                        ORCID Profile Data (API v2.0)
-                    </h3>
+                        ORCID Profile
                 </div>
             </xsl:if>
 
             <!-- START: personal -->
             <xsl:if test="$display_personal='yes'">
-                <div>
-                    <h3>Personal Information</h3>
-                </div>
+                <div>Personal Information</div>
                 <!-- name -->
                 <div>
                     <xsl:if test="record:record/person:person/person:name">
@@ -92,9 +88,7 @@
                 </div>
 
                 <!-- biography -->
-                <div>
-                    <h4>Biography</h4>
-                </div>
+                <div>Biography</div>
                 <div>
                     <blockquote>
                         <xsl:choose>
@@ -108,15 +102,13 @@
                 </div>
 
                 <!-- keywords -->
-                <div>
-                    <h4>Keywords</h4>
-                </div>
+                <!--
+                <div>Keywords</div>
                 <div>
                     <table border="1">
                         <tr bgcolor="#9acd32">
                             <th>Keywords</th>
                         </tr>
-                        <!-- if at least 1 "keyword:keyword" exists -->
                         <xsl:if test="record:record/person:person/keyword:keywords/keyword:keyword">
                             <xsl:for-each select="record:record/person:person/keyword:keywords/keyword:keyword">
                                 <tr>
@@ -128,18 +120,17 @@
                         </xsl:if>
                     </table>
                 </div>
+                -->
 
                 <!-- URLs -->
-                <div>
-                    <h4>URLs</h4>
-                </div>
+                <!--
+                <div>URLs</div>
                 <div>
                     <table border="1">
                         <tr bgcolor="#9acd32">
                             <th>Name</th>
                             <th>URL</th>
                         </tr>
-                        <!-- if at least 1 "researcher-url:researcher-url" exists -->
                         <xsl:if test="record:record/person:person/researcher-url:researcher-urls/researcher-url:researcher-url">
                             <xsl:for-each
                                     select="record:record/person:person/researcher-url:researcher-urls/researcher-url:researcher-url">
@@ -155,31 +146,27 @@
                         </xsl:if>
                     </table>
                 </div>
+                -->
 
-                <div>
-                    <h4>Skipping Section: other-name:other-names</h4>
-                </div>
-                <div>
-                    <h4>Skipping Section: external-identifier:external-identifiers</h4>
-                </div>
-                <div>
-                    <h4>Skipping Section: address:addresses</h4>
-                </div>
+                <!--
+                <div>Skipping Section: other-name:other-names</div>
+                <div>Skipping Section: external-identifier:external-identifiers</div>
+                <div>Skipping Section: address:addresses</div>
+                -->
 
             </xsl:if>
             <!-- END: personal -->
 
             <!-- START: education -->
             <xsl:if test="$display_education='yes'">
-                <div>
-                    <h3>Education History</h3>
-                </div>
+                <div>Education History</div>
                 <div>
                     <table border="1">
                         <tr bgcolor="#9acd32">
                             <th>Department</th>
                             <th>Degree</th>
                             <th>Institution</th>
+                            <!--
                             <th>City</th>
                             <th>Region</th>
                             <th>Country</th>
@@ -189,6 +176,7 @@
                             <th>End Year</th>
                             <th>End Month</th>
                             <th>End Day</th>
+                            -->
                         </tr>
                         <!-- if at least 1 "activities:educations/education:education-summary" exists -->
                         <xsl:if test="record:record/activities:activities-summary/activities:educations/education:education-summary">
@@ -204,6 +192,7 @@
                                     <td>
                                         <xsl:value-of select="education:organization/common:name"/>
                                     </td>
+                                    <!--
                                     <td>
                                         <xsl:value-of select="education:organization/common:address/common:city"/>
                                     </td>
@@ -231,6 +220,7 @@
                                     <td>
                                         <xsl:value-of select="common:end-date/common:day"/>
                                     </td>
+                                    -->
                                 </tr>
                             </xsl:for-each>
                         </xsl:if>
@@ -241,14 +231,13 @@
 
             <!-- START: employment -->
             <xsl:if test="$display_employment='yes'">
-                <div>
-                    <h3>Employment History</h3>
-                </div>
+                <div>Employment History</div>
                 <div>
                     <table border="1">
                         <tr bgcolor="#9acd32">
                             <th>Title</th>
                             <th>Institution</th>
+                            <!--
                             <th>City</th>
                             <th>Region</th>
                             <th>Country</th>
@@ -258,6 +247,7 @@
                             <th>End Year</th>
                             <th>End Month</th>
                             <th>End Day</th>
+                            -->
                         </tr>
                         <!-- if at least 1 "activities:employments/employment:employment-summary" exists -->
                         <xsl:if test="record:record/activities:activities-summary/activities:employments/employment:employment-summary">
@@ -270,6 +260,7 @@
                                     <td>
                                         <xsl:value-of select="employment:organization/common:name"/>
                                     </td>
+                                    <!--
                                     <td>
                                         <xsl:value-of select="employment:organization/common:address/common:city"/>
                                     </td>
@@ -297,6 +288,7 @@
                                     <td>
                                         <xsl:value-of select="common:end-date/common:day"/>
                                     </td>
+                                    -->
                                 </tr>
                             </xsl:for-each>
                         </xsl:if>
@@ -307,18 +299,18 @@
 
             <!-- START: works (activities-group) -->
             <xsl:if test="$display_works='yes'">
-                <div>
-                    <h3>Academic Works History</h3>
-                </div>
+                <div>Academic Works History</div>
                 <div>
                     <table border="1">
                         <tr bgcolor="#9acd32">
                             <th>Title</th>
                             <th>Type</th>
                             <th>Publication Year</th>
+                            <!--
                             <th>Publication Month</th>
                             <th>Publication Day</th>
                             <th>External IDs</th>
+                            -->
                         </tr>
                         <!-- if at least 1 "activities:works/activities:group" exists -->
                         <xsl:if test="record:record/activities:activities-summary/activities:works/activities:group">
@@ -334,15 +326,18 @@
                                     <td>
                                         <xsl:value-of select="work:work-summary/common:publication-date/common:year"/>
                                     </td>
+                                    <!--
                                     <td>
                                         <xsl:value-of select="work:work-summary/common:publication-date/common:month"/>
                                     </td>
                                     <td>
                                         <xsl:value-of select="work:work-summary/common:publication-date/common:day"/>
                                     </td>
+                                    -->
+                                    <!-- BEGIN: external ID table -->
+                                    <!-- if at least 1 "common:external-ids/common:external-id" exists -->
+                                    <!--
                                     <td>
-                                        <!-- BEGIN: external ID table -->
-                                        <!-- if at least 1 "common:external-ids/common:external-id" exists -->
                                         <xsl:if test="work:work-summary/common:external-ids/common:external-id">
                                             <table border="1">
                                                 <tr>
@@ -366,8 +361,8 @@
                                                 </xsl:for-each>
                                             </table>
                                         </xsl:if>
-                                        <!-- END external ID table -->
                                     </td>
+                                    -->
                                 </tr>
                             </xsl:for-each>
                         </xsl:if>
@@ -378,9 +373,7 @@
 
             <!-- START: fundings -->
             <xsl:if test="$display_fundings='yes'">
-                <div>
-                    <h2>Funding Sources</h2>
-                </div>
+                <div>Funding Sources</div>
                 <div>
                     <table border="1">
                         <tr bgcolor="#9acd32">
@@ -431,9 +424,7 @@
 
             <!-- START: peer-reviews -->
             <xsl:if test="$display_peer_reviews='yes'">
-                <div>
-                    <h3>Peer Review and Service Activity</h3>
-                </div>
+                <div>Peer Review and Service Activity</div>
                 <div>
                     <table border="1">
                         <tr bgcolor="#9acd32">
