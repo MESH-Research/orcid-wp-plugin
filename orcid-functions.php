@@ -1,8 +1,5 @@
 <?php
-define( 'MY_PLUGIN_PATH', plugin_dir_path( __DIR__ ) );
-define( 'ORCID_XSLT', MY_PLUGIN_PATH . 'orcid-data-all.xsl');
-define( 'ORCID_SITE', 'https://pub.orcid.org/');
-define( 'ORCID_API_VERSION', 'v2.0');
+include_once( plugin_dir_path( __FILE__ ) . 'config.php');
 
 /**
  * download data from orcid.org
@@ -11,7 +8,7 @@ define( 'ORCID_API_VERSION', 'v2.0');
  * @return string $orcid_xml
  */
 function download_orcid_data($orcid_id){
-    $orcid_link = ORCID_SITE . ORCID_API_VERSION . "/" . $orcid_id;
+    $orcid_link = ORCID_URL . $orcid_id;
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -47,7 +44,9 @@ function format_orcid_data_as_html($orcid_xml, $display_sections){
 
     //
     // control which sections are displayed
-    $html_doc->setParameter('', 'display_personal', $display_sections['display_personal']);
+	$html_doc->setParameter('', 'display_header', $display_sections['display_header']);
+	// $html_doc->setParameter('', 'display_header', 'yes');
+	$html_doc->setParameter('', 'display_personal', $display_sections['display_personal']);
     $html_doc->setParameter('', 'display_education', $display_sections['display_education']);
     $html_doc->setParameter('', 'display_employment', $display_sections['display_employment']);
     $html_doc->setParameter('', 'display_works', $display_sections['display_works']);

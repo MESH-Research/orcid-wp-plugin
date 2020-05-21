@@ -23,8 +23,9 @@
                 xmlns:external-identifier="http://www.orcid.org/ns/external-identifier"
                 version="1.0">
 
-  <!-- parameters -->
+    <!-- parameters -->
     <!-- NOTE: parameter values must be quoted if you want strings (and not XPath entries) -->
+    <xsl:param name="display_header" select="'yes'"/>
     <xsl:param name="display_personal" select="'yes'"/>
     <xsl:param name="display_education" select="'yes'"/>
     <xsl:param name="display_employment" select="'yes'"/>
@@ -36,23 +37,30 @@
 
     <xsl:template match="/">
 
-            <div>
-                <h1>
-                    <xsl:value-of
-                            select="record:record/person:person/person:name/personal-details:given-names"/>
-                    <xsl:text> </xsl:text>
-                    <xsl:value-of
-                            select="record:record/person:person/person:name/personal-details:family-name"/>
-                    <xsl:text> </xsl:text>
-                    ORCID Profile Data (API v2.0)
-                </h1>
+        <div id="orcid_data">
+            <xsl:if test="$display_header='yes'">
+                <div id="orcid_header">
+                    <h3>
+                        <xsl:value-of
+                                select="record:record/person:person/person:name/personal-details:given-names"/>
+                        <xsl:text> </xsl:text>
+                        <xsl:value-of
+                                select="record:record/person:person/person:name/personal-details:family-name"/>
+                        <xsl:text> </xsl:text>
+                        ORCID Profile Data (API v2.0)
+                    </h3>
+                </div>
+            </xsl:if>
 
-                <!-- START: personal -->
-                <xsl:if test="$display_personal='yes'">
-                    <h2>Personal Information</h2>
-                    <!-- name -->
+            <!-- START: personal -->
+            <xsl:if test="$display_personal='yes'">
+                <div>
+                    <h3>Personal Information</h3>
+                </div>
+                <!-- name -->
+                <div>
                     <xsl:if test="record:record/person:person/person:name">
-                        <h4>Name Information</h4>
+                        <div>Name Information</div>
                         <table border="1">
                             <tr bgcolor="#9acd32">
                                 <th>Field</th>
@@ -81,9 +89,13 @@
                             </tr>
                         </table>
                     </xsl:if>
+                </div>
 
-                    <!-- biography -->
+                <!-- biography -->
+                <div>
                     <h4>Biography</h4>
+                </div>
+                <div>
                     <blockquote>
                         <xsl:choose>
                             <xsl:when test="record:record/person:person/person:biography">
@@ -93,9 +105,13 @@
                             <xsl:otherwise>No biography entered.</xsl:otherwise>
                         </xsl:choose>
                     </blockquote>
+                </div>
 
-                    <!-- keywords -->
+                <!-- keywords -->
+                <div>
                     <h4>Keywords</h4>
+                </div>
+                <div>
                     <table border="1">
                         <tr bgcolor="#9acd32">
                             <th>Keywords</th>
@@ -111,9 +127,13 @@
                             </xsl:for-each>
                         </xsl:if>
                     </table>
+                </div>
 
-                    <!-- URLs -->
+                <!-- URLs -->
+                <div>
                     <h4>URLs</h4>
+                </div>
+                <div>
                     <table border="1">
                         <tr bgcolor="#9acd32">
                             <th>Name</th>
@@ -134,304 +154,338 @@
                             </xsl:for-each>
                         </xsl:if>
                     </table>
+                </div>
 
-                  <h4>Skipping Section: other-name:other-names</h4>
-                  <h4>Skipping Section: external-identifier:external-identifiers</h4>
-                  <h4>Skipping Section: address:addresses</h4>
+                <div>
+                    <h4>Skipping Section: other-name:other-names</h4>
+                </div>
+                <div>
+                    <h4>Skipping Section: external-identifier:external-identifiers</h4>
+                </div>
+                <div>
+                    <h4>Skipping Section: address:addresses</h4>
+                </div>
 
-                </xsl:if>
-                <!-- END: personal -->
+            </xsl:if>
+            <!-- END: personal -->
 
-                <!-- START: education -->
-                <xsl:if test="$display_education='yes'">
-                <h2>Education History</h2>
-                <table border="1">
-                    <tr bgcolor="#9acd32">
-                        <th>Department</th>
-                        <th>Degree</th>
-                        <th>Institution</th>
-                        <th>City</th>
-                        <th>Region</th>
-                        <th>Country</th>
-                        <th>Start Year</th>
-                        <th>Start Month</th>
-                        <th>Start Day</th>
-                        <th>End Year</th>
-                        <th>End Month</th>
-                        <th>End Day</th>
-                    </tr>
-                    <!-- if at least 1 "activities:educations/education:education-summary" exists -->
-                    <xsl:if test="record:record/activities:activities-summary/activities:educations/education:education-summary">
-                        <xsl:for-each
-                                select="record:record/activities:activities-summary/activities:educations/education:education-summary">
-                            <tr>
-                                <td>
-                                    <xsl:value-of select="education:department-name"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="education:role-title"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="education:organization/common:name"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="education:organization/common:address/common:city"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="education:organization/common:address/common:region"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="education:organization/common:address/common:country"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="common:start-date/common:year"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="common:start-date/common:month"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="common:start-date/common:day"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="common:end-date/common:year"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="common:end-date/common:month"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="common:end-date/common:day"/>
-                                </td>
-                            </tr>
-                        </xsl:for-each>
-                    </xsl:if>
-                </table>
-                </xsl:if>
-                <!-- END: education -->
+            <!-- START: education -->
+            <xsl:if test="$display_education='yes'">
+                <div>
+                    <h3>Education History</h3>
+                </div>
+                <div>
+                    <table border="1">
+                        <tr bgcolor="#9acd32">
+                            <th>Department</th>
+                            <th>Degree</th>
+                            <th>Institution</th>
+                            <th>City</th>
+                            <th>Region</th>
+                            <th>Country</th>
+                            <th>Start Year</th>
+                            <th>Start Month</th>
+                            <th>Start Day</th>
+                            <th>End Year</th>
+                            <th>End Month</th>
+                            <th>End Day</th>
+                        </tr>
+                        <!-- if at least 1 "activities:educations/education:education-summary" exists -->
+                        <xsl:if test="record:record/activities:activities-summary/activities:educations/education:education-summary">
+                            <xsl:for-each
+                                    select="record:record/activities:activities-summary/activities:educations/education:education-summary">
+                                <tr>
+                                    <td>
+                                        <xsl:value-of select="education:department-name"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="education:role-title"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="education:organization/common:name"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="education:organization/common:address/common:city"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="education:organization/common:address/common:region"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="education:organization/common:address/common:country"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="common:start-date/common:year"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="common:start-date/common:month"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="common:start-date/common:day"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="common:end-date/common:year"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="common:end-date/common:month"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="common:end-date/common:day"/>
+                                    </td>
+                                </tr>
+                            </xsl:for-each>
+                        </xsl:if>
+                    </table>
+                </div>
+            </xsl:if>
+            <!-- END: education -->
 
-                <!-- START: employment -->
-                <xsl:if test="$display_employment='yes'">
-                <h2>Employment History</h2>
-                <table border="1">
-                    <tr bgcolor="#9acd32">
-                        <th>Title</th>
-                        <th>Institution</th>
-                        <th>City</th>
-                        <th>Region</th>
-                        <th>Country</th>
-                        <th>Start Year</th>
-                        <th>Start Month</th>
-                        <th>Start Day</th>
-                        <th>End Year</th>
-                        <th>End Month</th>
-                        <th>End Day</th>
-                    </tr>
-                    <!-- if at least 1 "activities:employments/employment:employment-summary" exists -->
-                    <xsl:if test="record:record/activities:activities-summary/activities:employments/employment:employment-summary">
-                        <xsl:for-each
-                                select="record:record/activities:activities-summary/activities:employments/employment:employment-summary">
-                            <tr>
-                                <td>
-                                    <xsl:value-of select="employment:role-title"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="employment:organization/common:name"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="employment:organization/common:address/common:city"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="employment:organization/common:address/common:region"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="employment:organization/common:address/common:country"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="common:start-date/common:year"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="common:start-date/common:month"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="common:start-date/common:day"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="common:end-date/common:year"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="common:end-date/common:month"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="common:end-date/common:day"/>
-                                </td>
-                            </tr>
-                        </xsl:for-each>
-                    </xsl:if>
-                </table>
-                </xsl:if>
-                <!-- END: employmant -->
+            <!-- START: employment -->
+            <xsl:if test="$display_employment='yes'">
+                <div>
+                    <h3>Employment History</h3>
+                </div>
+                <div>
+                    <table border="1">
+                        <tr bgcolor="#9acd32">
+                            <th>Title</th>
+                            <th>Institution</th>
+                            <th>City</th>
+                            <th>Region</th>
+                            <th>Country</th>
+                            <th>Start Year</th>
+                            <th>Start Month</th>
+                            <th>Start Day</th>
+                            <th>End Year</th>
+                            <th>End Month</th>
+                            <th>End Day</th>
+                        </tr>
+                        <!-- if at least 1 "activities:employments/employment:employment-summary" exists -->
+                        <xsl:if test="record:record/activities:activities-summary/activities:employments/employment:employment-summary">
+                            <xsl:for-each
+                                    select="record:record/activities:activities-summary/activities:employments/employment:employment-summary">
+                                <tr>
+                                    <td>
+                                        <xsl:value-of select="employment:role-title"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="employment:organization/common:name"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="employment:organization/common:address/common:city"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="employment:organization/common:address/common:region"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="employment:organization/common:address/common:country"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="common:start-date/common:year"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="common:start-date/common:month"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="common:start-date/common:day"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="common:end-date/common:year"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="common:end-date/common:month"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="common:end-date/common:day"/>
+                                    </td>
+                                </tr>
+                            </xsl:for-each>
+                        </xsl:if>
+                    </table>
+                </div>
+            </xsl:if>
+            <!-- END: employmant -->
 
-                <!-- START: works (activities-group) -->
-                <xsl:if test="$display_works='yes'">
-                <h2>Academic Works History</h2>
-                <table border="1">
-                    <tr bgcolor="#9acd32">
-                        <th>Title</th>
-                        <th>Type</th>
-                        <th>Publication Year</th>
-                        <th>Publication Month</th>
-                        <th>Publication Day</th>
-                        <th>External IDs</th>
-                    </tr>
-                    <!-- if at least 1 "activities:works/activities:group" exists -->
-                    <xsl:if test="record:record/activities:activities-summary/activities:works/activities:group">
-                        <xsl:for-each
-                                select="record:record/activities:activities-summary/activities:works/activities:group">
-                            <tr>
-                                <td>
-                                    <xsl:value-of select="work:work-summary/work:title/common:title"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="work:work-summary/work:type"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="work:work-summary/common:publication-date/common:year"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="work:work-summary/common:publication-date/common:month"/>
-                                </td>
-                                <td>
-                                    <xsl:value-of select="work:work-summary/common:publication-date/common:day"/>
-                                </td>
-                                <td>
-                                    <!-- BEGIN: external ID table -->
-                                    <!-- if at least 1 "common:external-ids/common:external-id" exists -->
-                                    <xsl:if test="work:work-summary/common:external-ids/common:external-id">
-                                        <table border="1">
-                                            <tr>
-                                                <th>Type</th>
-                                                <th>Value</th>
-                                                <th>URL</th>
-                                            </tr>
-                                            <xsl:for-each
-                                                    select="work:work-summary/common:external-ids/common:external-id">
+            <!-- START: works (activities-group) -->
+            <xsl:if test="$display_works='yes'">
+                <div>
+                    <h3>Academic Works History</h3>
+                </div>
+                <div>
+                    <table border="1">
+                        <tr bgcolor="#9acd32">
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Publication Year</th>
+                            <th>Publication Month</th>
+                            <th>Publication Day</th>
+                            <th>External IDs</th>
+                        </tr>
+                        <!-- if at least 1 "activities:works/activities:group" exists -->
+                        <xsl:if test="record:record/activities:activities-summary/activities:works/activities:group">
+                            <xsl:for-each
+                                    select="record:record/activities:activities-summary/activities:works/activities:group">
+                                <tr>
+                                    <td>
+                                        <xsl:value-of select="work:work-summary/work:title/common:title"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="work:work-summary/work:type"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="work:work-summary/common:publication-date/common:year"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="work:work-summary/common:publication-date/common:month"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="work:work-summary/common:publication-date/common:day"/>
+                                    </td>
+                                    <td>
+                                        <!-- BEGIN: external ID table -->
+                                        <!-- if at least 1 "common:external-ids/common:external-id" exists -->
+                                        <xsl:if test="work:work-summary/common:external-ids/common:external-id">
+                                            <table border="1">
                                                 <tr>
-                                                    <td>
-                                                        <xsl:value-of select="common:external-id-type"/>
-                                                    </td>
-                                                    <td>
-                                                        <xsl:value-of select="common:external-id-value"/>
-                                                    </td>
-                                                    <td>
-                                                        <xsl:value-of select="common:external-id-url"/>
-                                                    </td>
+                                                    <th>Type</th>
+                                                    <th>Value</th>
+                                                    <th>URL</th>
                                                 </tr>
-                                            </xsl:for-each>
-                                        </table>
-                                    </xsl:if>
-                                    <!-- END external ID table -->
-                                </td>
-                            </tr>
-                        </xsl:for-each>
-                    </xsl:if>
-                </table>
-                </xsl:if>
-                <!-- END: works -->
+                                                <xsl:for-each
+                                                        select="work:work-summary/common:external-ids/common:external-id">
+                                                    <tr>
+                                                        <td>
+                                                            <xsl:value-of select="common:external-id-type"/>
+                                                        </td>
+                                                        <td>
+                                                            <xsl:value-of select="common:external-id-value"/>
+                                                        </td>
+                                                        <td>
+                                                            <xsl:value-of select="common:external-id-url"/>
+                                                        </td>
+                                                    </tr>
+                                                </xsl:for-each>
+                                            </table>
+                                        </xsl:if>
+                                        <!-- END external ID table -->
+                                    </td>
+                                </tr>
+                            </xsl:for-each>
+                        </xsl:if>
+                    </table>
+                </div>
+            </xsl:if>
+            <!-- END: works -->
 
-                <!-- START: fundings -->
-                <xsl:if test="$display_fundings='yes'">
-                <h2>Funding Sources</h2>
-                <table border="1">
-                  <tr bgcolor="#9acd32">
-                    <th>Title</th>
-                    <th>Type</th>
-                    <th>Start Year</th>
-                    <th>Start Month</th>
-                    <th>Start Day</th>
-                    <th>End Year</th>
-                    <th>End Month</th>
-                    <th>End Day</th>
-                  </tr>
-                  <xsl:if test="record:record/activities:activities-summary/activities:fundings/activities:group">
-                  <xsl:for-each
-                          select="record:record/activities:activities-summary/activities:fundings/activities:group">
-                    <tr>
-                      <td>
-                        <xsl:value-of select="funding:funding-summary/funding:title/common:title"/>
-                      </td>
-                      <td>
-                        <xsl:value-of select="funding:funding-summary/funding:type"/>
-                      </td>
-                      <td>
-                        <xsl:value-of select="funding:funding-summary/common:start-date/common:year"/>
-                      </td>
-                      <td>
-                        <xsl:value-of select="funding:funding-summary/common:start-date/common:month"/>
-                      </td>
-                      <td>
-                        <xsl:value-of select="funding:funding-summary/common:start-date/common:day"/>
-                      </td>
-                      <td>
-                        <xsl:value-of select="funding:funding-summary/common:end-date/common:year"/>
-                      </td>
-                      <td>
-                        <xsl:value-of select="funding:funding-summary/common:end-date/common:month"/>
-                      </td>
-                      <td>
-                        <xsl:value-of select="funding:funding-summary/common:end-date/common:day"/>
-                      </td>
-                    </tr>
-                  </xsl:for-each>
-                  </xsl:if>
-                </table>
-                </xsl:if>
-                <!-- END: fundings -->
+            <!-- START: fundings -->
+            <xsl:if test="$display_fundings='yes'">
+                <div>
+                    <h2>Funding Sources</h2>
+                </div>
+                <div>
+                    <table border="1">
+                        <tr bgcolor="#9acd32">
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Start Year</th>
+                            <th>Start Month</th>
+                            <th>Start Day</th>
+                            <th>End Year</th>
+                            <th>End Month</th>
+                            <th>End Day</th>
+                        </tr>
+                        <xsl:if test="record:record/activities:activities-summary/activities:fundings/activities:group">
+                            <xsl:for-each
+                                    select="record:record/activities:activities-summary/activities:fundings/activities:group">
+                                <tr>
+                                    <td>
+                                        <xsl:value-of select="funding:funding-summary/funding:title/common:title"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="funding:funding-summary/funding:type"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="funding:funding-summary/common:start-date/common:year"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="funding:funding-summary/common:start-date/common:month"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="funding:funding-summary/common:start-date/common:day"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="funding:funding-summary/common:end-date/common:year"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="funding:funding-summary/common:end-date/common:month"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="funding:funding-summary/common:end-date/common:day"/>
+                                    </td>
+                                </tr>
+                            </xsl:for-each>
+                        </xsl:if>
+                    </table>
+                </div>
+            </xsl:if>
+            <!-- END: fundings -->
 
-                <!-- START: peer-reviews -->
-                <xsl:if test="$display_peer_reviews='yes'">
-                <h2>Peer Review and Service Activity</h2>
-              <table border="1">
-                <tr bgcolor="#9acd32">
-                  <th>Convening Organization Name</th>
-                  <th>City</th>
-                  <th>Region</th>
-                  <th>Country</th>
-                  <th>Completion Year</th>
-                  <th>Completion Month</th>
-                  <th>Completion Day</th>
-                </tr>
-                <xsl:if test="record:record/activities:activities-summary/activities:peer-reviews/activities:group">
-                  <xsl:for-each
-                          select="record:record/activities:activities-summary/activities:peer-reviews/activities:group">
-                    <tr>
-                      <td>
-                        <xsl:value-of select="peer-review:summary/peer-review:convening-organization/common:name"/>
-                      </td>
-                      <td>
-                        <xsl:value-of select="peer-review:summary/peer-review:convening-organization/common:address/common:city"/>
-                      </td>
-                      <td>
-                        <xsl:value-of select="peer-review:summary/peer-review:convening-organization/common:address/common:region"/>
-                      </td>
-                      <td>
-                        <xsl:value-of select="peer-review:summary/peer-review:convening-organization/common:address/common:country"/>
-                      </td>
-                      <td>
-                        <xsl:value-of select="peer-review:summary/peer-review:completion-date/common:year"/>
-                      </td>
-                      <td>
-                        <xsl:value-of select="peer-review:summary/peer-review:completion-date/common:month"/>
-                      </td>
-                      <td>
-                        <xsl:value-of select="peer-review:summary/peer-review:completion-date/common:day"/>
-                      </td>
-                    </tr>
-                  </xsl:for-each>
-                </xsl:if>
-              </table>
-                </xsl:if>
-                <!-- END: peer-reviews -->
+            <!-- START: peer-reviews -->
+            <xsl:if test="$display_peer_reviews='yes'">
+                <div>
+                    <h3>Peer Review and Service Activity</h3>
+                </div>
+                <div>
+                    <table border="1">
+                        <tr bgcolor="#9acd32">
+                            <th>Convening Organization Name</th>
+                            <th>City</th>
+                            <th>Region</th>
+                            <th>Country</th>
+                            <th>Completion Year</th>
+                            <th>Completion Month</th>
+                            <th>Completion Day</th>
+                        </tr>
+                        <xsl:if test="record:record/activities:activities-summary/activities:peer-reviews/activities:group">
+                            <xsl:for-each
+                                    select="record:record/activities:activities-summary/activities:peer-reviews/activities:group">
+                                <tr>
+                                    <td>
+                                        <xsl:value-of
+                                                select="peer-review:summary/peer-review:convening-organization/common:name"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of
+                                                select="peer-review:summary/peer-review:convening-organization/common:address/common:city"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of
+                                                select="peer-review:summary/peer-review:convening-organization/common:address/common:region"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of
+                                                select="peer-review:summary/peer-review:convening-organization/common:address/common:country"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of
+                                                select="peer-review:summary/peer-review:completion-date/common:year"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of
+                                                select="peer-review:summary/peer-review:completion-date/common:month"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of
+                                                select="peer-review:summary/peer-review:completion-date/common:day"/>
+                                    </td>
+                                </tr>
+                            </xsl:for-each>
+                        </xsl:if>
+                    </table>
+                </div>
+            </xsl:if>
+            <!-- END: peer-reviews -->
 
-            </div>
+        </div>
 
     </xsl:template>
 

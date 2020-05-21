@@ -11,11 +11,9 @@
 /**
  * ... insert any required ownership and copyright boilerplate here
  */
-
-define( 'MY_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+include_once( plugin_dir_path( __FILE__ ) . 'config.php');
 include( MY_PLUGIN_PATH . 'orcid-functions.php');
-// in seconds
-define( 'ORCID_CACHE_TIMEOUT', 3600);
+
 /************************
  * WORDPRESS HOOKS
  ************************/
@@ -82,6 +80,12 @@ function orcid_settings_form()
     // just leave this as '' (blank)
     $valid = '';
     $download_from_orcid_flag = FALSE;
+	//
+	// this option (display a title line/header) is not available to the user
+	// it is set to 'yes' in the orcid config backend
+	// it can be set to 'no' when individual orcid sections are to be displayed
+	// e.g. when using short words
+	$display_sections['display_header'] = 'yes';
     //=================================================
     // process a form submission if it has occurred
     if (isset($_POST['submit'])) {
@@ -93,8 +97,11 @@ function orcid_settings_form()
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++
         check_admin_referer('orcid_nonce');
 
-        $orcid_id = $_POST['orcid_id'];
-
+	    if (isset($_POST['orcid_id'])) {
+		    $orcid_id = $_POST['orcid_id'];
+	    } else {
+		    $orcid_id = '';
+	    }
         //
         // we can either download the data from orcid.org OR use the cached value
         // we download the data IFF ($download_from_orcid_flag = TRUE)
@@ -125,12 +132,36 @@ function orcid_settings_form()
             $download_from_orcid_flag = TRUE;
         }
 
-        $display_sections['display_personal'] = $_POST['display_personal'];
-        $display_sections['display_education'] = $_POST['display_education'];
-        $display_sections['display_employment'] = $_POST['display_employment'];
-        $display_sections['display_works'] = $_POST['display_works'];
-        $display_sections['display_fundings'] = $_POST['display_fundings'];
-        $display_sections['display_peer_reviews'] = $_POST['display_peer_reviews'];
+	    if (isset($_POST['display_personal'])) {
+		    $display_sections['display_personal'] = $_POST['display_personal'];
+	    } else {
+		    $display_sections['display_personal'] = 'no';
+	    }
+	    if (isset($_POST['display_education'])) {
+		    $display_sections['display_education'] = $_POST['display_education'];
+	    } else {
+		    $display_sections['display_education'] = 'no';
+	    }
+	    if (isset($_POST['display_employment'])) {
+		    $display_sections['display_employment'] = $_POST['display_employment'];
+	    } else {
+		    $display_sections['display_employment'] = 'no';
+	    }
+	    if (isset($_POST['display_works'])) {
+		    $display_sections['display_works'] = $_POST['display_works'];
+	    } else {
+		    $display_sections['display_works'] = 'no';
+	    }
+	    if (isset($_POST['display_fundings'])) {
+		    $display_sections['display_fundings'] = $_POST['display_fundings'];
+	    } else {
+		    $display_sections['display_fundings'] = 'no';
+	    }
+	    if (isset($_POST['display_peer_reviews'])) {
+		    $display_sections['display_peer_reviews'] = $_POST['display_peer_reviews'];
+	    } else {
+		    $display_sections['display_peer_reviews'] = 'no';
+	    }
 
         update_user_meta($user, '_orcid_id', $orcid_id);
         update_user_meta($user, '_orcid_display_personal', $display_sections['display_personal']);
@@ -148,7 +179,7 @@ function orcid_settings_form()
         $display_sections['display_employment'] = get_user_meta($user, '_orcid_display_employment', TRUE);
         $display_sections['display_works'] = get_user_meta($user, '_orcid_display_works', TRUE);
         $display_sections['display_fundings'] = get_user_meta($user, '_orcid_display_fundings', TRUE);
-        $display_sections['display_peer_reviews'] = get_user_meta($user, '_orcid_display_peer_reviews', TRUE);
+	    $display_sections['display_peer_reviews'] = get_user_meta($user, '_orcid_display_peer_reviews', TRUE);
     }
     ?>
     <div class="wrap">
@@ -215,14 +246,14 @@ function orcid_settings_form()
     <div class="wrap" id="orcid_wrapper">
         <?php
         if($download_from_orcid_flag) {
-            // echo "<h4>Downloading XML data from orcid.org</h4>" . PHP_EOL;
+            echo '<p>Downloading XML data from orcid.org</p>' . PHP_EOL;
             $orcid_xml = download_orcid_data($orcid_id);
             update_user_meta($user, '_orcid_xml', $orcid_xml);
             //
             // keep track of when download occurred
             update_user_meta($user, '_orcid_xml_download_time', strval(time()));
         } else{
-            // echo "<h4>Using cached XML data</h4>" . PHP_EOL;
+            echo '<p>Using cached XML data</p>' . PHP_EOL;
             $orcid_xml = get_user_meta($user, '_orcid_xml', TRUE);
         }
 
