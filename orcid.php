@@ -177,14 +177,43 @@ function orcid_settings_form()
 	    } else {
 		    $display_sections['display_peer_reviews'] = 'no';
 	    }
-
+	    if (isset($_POST['display_invited_positions'])) {
+		    $display_sections['display_invited_positions'] = $_POST['display_invited_positions'];
+	    } else {
+		    $display_sections['display_invited_positions'] = 'no';
+	    }
+	    if (isset($_POST['display_memberships'])) {
+		    $display_sections['display_memberships'] = $_POST['display_memberships'];
+	    } else {
+		    $display_sections['display_memberships'] = 'no';
+	    }
+	    if (isset($_POST['display_qualifications'])) {
+		    $display_sections['display_qualifications'] = $_POST['display_qualifications'];
+	    } else {
+		    $display_sections['display_qualifications'] = 'no';
+	    }
+	    if (isset($_POST['display_research_resources'])) {
+		    $display_sections['display_research_resources'] = $_POST['display_research_resources'];
+	    } else {
+		    $display_sections['display_research_resources'] = 'no';
+	    }
+	    if (isset($_POST['display_services'])) {
+		    $display_sections['display_services'] = $_POST['display_services'];
+	    } else {
+		    $display_sections['display_services'] = 'no';
+	    }
         update_user_meta($user, '_orcid_id', $orcid_id);
         update_user_meta($user, '_orcid_display_personal', $display_sections['display_personal']);
         update_user_meta($user, '_orcid_display_education', $display_sections['display_education']);
         update_user_meta($user, '_orcid_display_employment', $display_sections['display_employment']);
         update_user_meta($user, '_orcid_display_works', $display_sections['display_works']);
         update_user_meta($user, '_orcid_display_fundings', $display_sections['display_fundings']);
-        update_user_meta($user, '_orcid_display_peer_reviews', $display_sections['display_peer_reviews']);
+	    update_user_meta($user, '_orcid_display_peer_reviews', $display_sections['display_peer_reviews']);
+	    update_user_meta($user, '_orcid_display_invited_positions', $display_sections['display_invited_positions']);
+	    update_user_meta($user, '_orcid_display_memberships', $display_sections['display_memberships']);
+	    update_user_meta($user, '_orcid_display_qualifications', $display_sections['display_qualifications']);
+	    update_user_meta($user, '_orcid_display_research_resources', $display_sections['display_research_resources']);
+	    update_user_meta($user, '_orcid_display_services', $display_sections['display_services']);
 
     } else {
         // if no NEW data has been submitted, use values from the database as defaults in the form
@@ -195,6 +224,11 @@ function orcid_settings_form()
         $display_sections['display_works'] = get_user_meta($user, '_orcid_display_works', TRUE);
         $display_sections['display_fundings'] = get_user_meta($user, '_orcid_display_fundings', TRUE);
 	    $display_sections['display_peer_reviews'] = get_user_meta($user, '_orcid_display_peer_reviews', TRUE);
+	    $display_sections['display_invited_positions'] = get_user_meta($user, '_orcid_display_invited_positions', TRUE);
+	    $display_sections['display_memberships'] = get_user_meta($user, '_orcid_display_memberships', TRUE);
+	    $display_sections['display_qualifications'] = get_user_meta($user, '_orcid_display_qualifications', TRUE);
+	    $display_sections['display_research_resources'] = get_user_meta($user, '_orcid_display_research_resources', TRUE);
+	    $display_sections['display_services'] = get_user_meta($user, '_orcid_display_services', TRUE);
     }
     ?>
     <div class="wrap">
@@ -243,11 +277,36 @@ function orcid_settings_form()
                             <?php if ($display_sections['display_fundings'] == 'yes') echo 'checked'; ?> />
                         <label for="display_fundings">Fundings</label>
                     </div>
-                    <div>
-                        <input type="checkbox" id="display_peer_reviews" name="display_peer_reviews" value="yes"
-                            <?php if ($display_sections['display_peer_reviews'] == 'yes') echo 'checked'; ?> />
-                        <label for="display_peer_reviews">Peer Reviews</label>
-                    </div>
+                        <div>
+                            <input type="checkbox" id="display_peer_reviews" name="display_peer_reviews" value="yes"
+			                    <?php if ($display_sections['display_peer_reviews'] == 'yes') echo 'checked'; ?> />
+                            <label for="display_peer_reviews">Peer Reviews</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="display_invited_positions" name="display_invited_positions" value="yes"
+			                    <?php if ($display_sections['display_invited_positions'] == 'yes') echo 'checked'; ?> />
+                            <label for="display_peer_reviews">Invited Positions</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="display_memberships" name="display_memberships" value="yes"
+			                    <?php if ($display_sections['display_memberships'] == 'yes') echo 'checked'; ?> />
+                            <label for="display_peer_reviews">Memberships</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="display_qualifications" name="display_qualifications" value="yes"
+			                    <?php if ($display_sections['display_qualifications'] == 'yes') echo 'checked'; ?> />
+                            <label for="display_peer_reviews">Qualifications</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="display_research_resources" name="display_research_resources" value="yes"
+			                    <?php if ($display_sections['display_research_resources'] == 'yes') echo 'checked'; ?> />
+                            <label for="display_peer_reviews">Research Resources</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="display_services" name="display_services" value="yes"
+			                    <?php if ($display_sections['display_services'] == 'yes') echo 'checked'; ?> />
+                            <label for="display_peer_reviews">Services</label>
+                        </div>
                     </td>
 
                 </tr>

@@ -21,6 +21,12 @@
                 xmlns:keyword="http://www.orcid.org/ns/keyword"
                 xmlns:email="http://www.orcid.org/ns/email"
                 xmlns:external-identifier="http://www.orcid.org/ns/external-identifier"
+                xmlns:distinction="http://www.orcid.org/ns/distinction"
+                xmlns:membership="http://www.orcid.org/ns/membership"
+                xmlns:invited-position="http://www.orcid.org/ns/invited-position"
+                xmlns:qualification="http://www.orcid.org/ns/qualification"
+                xmlns:service="http://www.orcid.org/ns/service"
+                xmlns:research-resource="http://www.orcid.org/ns/research-resource"
                 version="1.0">
 
     <!-- parameters -->
@@ -32,6 +38,12 @@
     <xsl:param name="display_works" select="'yes'"/>
     <xsl:param name="display_fundings" select="'yes'"/>
     <xsl:param name="display_peer_reviews" select="'yes'"/>
+    <xsl:param name="display_invited_positions" select="'yes'"/>
+    <xsl:param name="display_memberships" select="'yes'"/>
+    <xsl:param name="display_qualifications" select="'yes'"/>
+    <xsl:param name="display_research_resources" select="'yes'"/>
+    <xsl:param name="display_services" select="'yes'"/>
+
     <!-- output format -->
     <xsl:output omit-xml-declaration="yes" indent="yes"/>
 
@@ -179,28 +191,28 @@
                             -->
                         </tr>
                         <!-- if at least 1 "activities:educations/education:education-summary" exists -->
-                        <xsl:if test="record:record/activities:activities-summary/activities:educations/education:education-summary">
+                        <xsl:if test="record:record/activities:activities-summary/activities:educations/activities:affiliation-group/education:education-summary">
                             <xsl:for-each
-                                    select="record:record/activities:activities-summary/activities:educations/education:education-summary">
+                                    select="record:record/activities:activities-summary/activities:educations/activities:affiliation-group/education:education-summary">
                                 <tr>
                                     <td>
-                                        <xsl:value-of select="education:department-name"/>
+                                        <xsl:value-of select="common:department-name"/>
                                     </td>
                                     <td>
-                                        <xsl:value-of select="education:role-title"/>
+                                        <xsl:value-of select="common:role-title"/>
                                     </td>
                                     <td>
-                                        <xsl:value-of select="education:organization/common:name"/>
+                                        <xsl:value-of select="common:organization/common:name"/>
                                     </td>
                                     <!--
                                     <td>
-                                        <xsl:value-of select="education:organization/common:address/common:city"/>
+                                        <xsl:value-of select="common:organization/common:address/common:city"/>
                                     </td>
                                     <td>
-                                        <xsl:value-of select="education:organization/common:address/common:region"/>
+                                        <xsl:value-of select="common:organization/common:address/common:region"/>
                                     </td>
                                     <td>
-                                        <xsl:value-of select="education:organization/common:address/common:country"/>
+                                        <xsl:value-of select="common:organization/common:address/common:country"/>
                                     </td>
                                     <td>
                                         <xsl:value-of select="common:start-date/common:year"/>
@@ -250,25 +262,25 @@
                             -->
                         </tr>
                         <!-- if at least 1 "activities:employments/employment:employment-summary" exists -->
-                        <xsl:if test="record:record/activities:activities-summary/activities:employments/employment:employment-summary">
+                        <xsl:if test="record:record/activities:activities-summary/activities:employments/activities:affiliation-group/employment:employment-summary">
                             <xsl:for-each
-                                    select="record:record/activities:activities-summary/activities:employments/employment:employment-summary">
+                                    select="record:record/activities:activities-summary/activities:employments/activities:affiliation-group/employment:employment-summary">
                                 <tr>
                                     <td>
-                                        <xsl:value-of select="employment:role-title"/>
+                                        <xsl:value-of select="common:role-title"/>
                                     </td>
                                     <td>
-                                        <xsl:value-of select="employment:organization/common:name"/>
+                                        <xsl:value-of select="common:organization/common:name"/>
                                     </td>
                                     <!--
                                     <td>
-                                        <xsl:value-of select="employment:organization/common:address/common:city"/>
+                                        <xsl:value-of select="common:organization/common:address/common:city"/>
                                     </td>
                                     <td>
-                                        <xsl:value-of select="employment:organization/common:address/common:region"/>
+                                        <xsl:value-of select="common:organization/common:address/common:region"/>
                                     </td>
                                     <td>
-                                        <xsl:value-of select="employment:organization/common:address/common:country"/>
+                                        <xsl:value-of select="common:organization/common:address/common:country"/>
                                     </td>
                                     <td>
                                         <xsl:value-of select="common:start-date/common:year"/>
@@ -424,7 +436,7 @@
 
             <!-- START: peer-reviews -->
             <xsl:if test="$display_peer_reviews='yes'">
-                <div>Peer Review and Service Activity</div>
+                <div>Peer Reviews</div>
                 <div>
                     <table border="1">
                         <tr bgcolor="#9acd32">
@@ -436,37 +448,37 @@
                             <th>Completion Month</th>
                             <th>Completion Day</th>
                         </tr>
-                        <xsl:if test="record:record/activities:activities-summary/activities:peer-reviews/activities:group">
+                        <xsl:if test="record:record/activities:activities-summary/activities:peer-reviews/activities:group/activities:peer-review-group">
                             <xsl:for-each
-                                    select="record:record/activities:activities-summary/activities:peer-reviews/activities:group">
+                                    select="record:record/activities:activities-summary/activities:peer-reviews/activities:group/activities:peer-review-group">
                                 <tr>
                                     <td>
                                         <xsl:value-of
-                                                select="peer-review:summary/peer-review:convening-organization/common:name"/>
+                                                select="peer-review:peer-review-summary/peer-review:convening-organization/common:name"/>
                                     </td>
                                     <td>
                                         <xsl:value-of
-                                                select="peer-review:summary/peer-review:convening-organization/common:address/common:city"/>
+                                                select="peer-review:peer-review-summary/peer-review:convening-organization/common:address/common:city"/>
                                     </td>
                                     <td>
                                         <xsl:value-of
-                                                select="peer-review:summary/peer-review:convening-organization/common:address/common:region"/>
+                                                select="peer-review:peer-review-summary/peer-review:convening-organization/common:address/common:region"/>
                                     </td>
                                     <td>
                                         <xsl:value-of
-                                                select="peer-review:summary/peer-review:convening-organization/common:address/common:country"/>
+                                                select="peer-review:peer-review-summary/peer-review:convening-organization/common:address/common:country"/>
                                     </td>
                                     <td>
                                         <xsl:value-of
-                                                select="peer-review:summary/peer-review:completion-date/common:year"/>
+                                                select="peer-review:peer-review-summary/peer-review:completion-date/common:year"/>
                                     </td>
                                     <td>
                                         <xsl:value-of
-                                                select="peer-review:summary/peer-review:completion-date/common:month"/>
+                                                select="peer-review:peer-review-summary/peer-review:completion-date/common:month"/>
                                     </td>
                                     <td>
                                         <xsl:value-of
-                                                select="peer-review:summary/peer-review:completion-date/common:day"/>
+                                                select="peer-review:peer-review-summary/peer-review:completion-date/common:day"/>
                                     </td>
                                 </tr>
                             </xsl:for-each>
@@ -475,6 +487,36 @@
                 </div>
             </xsl:if>
             <!-- END: peer-reviews -->
+
+            <!-- START: invited_positions -->
+            <xsl:if test="$display_invited_positions='yes'">
+                <div><h3>Invited Positions (placeholder)</h3></div>
+            </xsl:if>
+            <!-- END: invited_positions -->
+
+            <!-- START: memberships -->
+            <xsl:if test="$display_memberships='yes'">
+                <div><h3>Memberships (placeholder)</h3></div>
+            </xsl:if>
+            <!-- END: memberships -->
+
+            <!-- START: qualifications -->
+            <xsl:if test="$display_qualifications='yes'">
+                <div><h3>Qualifications (placeholder)</h3></div>
+            </xsl:if>
+            <!-- END: invited_positions -->
+
+            <!-- START: research_resources -->
+            <xsl:if test="$display_research_resources='yes'">
+                <div><h3>Research Resources (placeholder)</h3></div>
+            </xsl:if>
+            <!-- END: research_resources -->
+
+            <!-- START: services -->
+            <xsl:if test="$display_services='yes'">
+                <div><h3>Services (placeholder)</h3></div>
+            </xsl:if>
+            <!-- END: services -->
 
         </div>
 

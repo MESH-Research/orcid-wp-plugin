@@ -6,5 +6,5 @@ define( 'ORCID_CACHE_TIMEOUT', 3600);
 // XSLT file to convert orcid xml to html
 define( 'ORCID_XSLT', MY_PLUGIN_PATH . 'orcid-data-all.xsl');
 // append orcid_id to this to access a users orcid data
-define( 'ORCID_URL', 'https://pub.orcid.org/v2.0/');
+define( 'ORCID_URL', 'https://pub.orcid.org/v3.0/');
 

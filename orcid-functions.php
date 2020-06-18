@@ -51,7 +51,12 @@ function format_orcid_data_as_html($orcid_xml, $display_sections){
     $html_doc->setParameter('', 'display_employment', $display_sections['display_employment']);
     $html_doc->setParameter('', 'display_works', $display_sections['display_works']);
     $html_doc->setParameter('', 'display_fundings', $display_sections['display_fundings']);
-    $html_doc->setParameter('', 'display_peer_reviews', $display_sections['display_peer_reviews']);
+	$html_doc->setParameter('', 'display_peer_reviews', $display_sections['display_peer_reviews']);
+	$html_doc->setParameter('', 'display_invited_positions', $display_sections['display_invited_positions']);
+	$html_doc->setParameter('', 'display_memberships', $display_sections['display_memberships']);
+	$html_doc->setParameter('', 'display_qualifications', $display_sections['display_qualifications']);
+	$html_doc->setParameter('', 'display_research_resources', $display_sections['display_research_resources']);
+	$html_doc->setParameter('', 'display_services', $display_sections['display_services']);
 
     $html_doc->importStylesheet($xsl_doc);
     $orcid_html =  $html_doc->transformToXML($xml_doc);
@@ -157,6 +162,31 @@ function orcid_data_function($atts) {
 		$display_sections['display_peer_reviews'] = 'yes';
 	} else {
 		$display_sections['display_peer_reviews'] = 'no';
+	}
+	if ($section == 'invited_positions') {
+		$display_sections['display_invited_positions'] = 'yes';
+	} else {
+		$display_sections['display_invited_positions'] = 'no';
+	}
+	if ($section == 'memberships') {
+		$display_sections['display_memberships'] = 'yes';
+	} else {
+		$display_sections['display_memberships'] = 'no';
+	}
+	if ($section == 'qualifications') {
+		$display_sections['display_qualifications'] = 'yes';
+	} else {
+		$display_sections['display_qualifications'] = 'no';
+	}
+	if ($section == 'research_resources') {
+		$display_sections['display_research_resources'] = 'yes';
+	} else {
+		$display_sections['display_research_resources'] = 'no';
+	}
+	if ($section == 'services') {
+		$display_sections['display_services'] = 'yes';
+	} else {
+		$display_sections['display_services'] = 'no';
 	}
 	//
 	// format as HTML
