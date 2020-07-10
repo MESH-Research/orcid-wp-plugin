@@ -26,8 +26,7 @@
                 xmlns:invited-position="http://www.orcid.org/ns/invited-position"
                 xmlns:qualification="http://www.orcid.org/ns/qualification"
                 xmlns:service="http://www.orcid.org/ns/service"
-                xmlns:research-resource="http://www.orcid.org/ns/research-resource"
-                version="1.0">
+                xmlns:research-resource="http://www.orcid.org/ns/research-resource" version="1.0">
 
     <!-- parameters -->
     <!-- NOTE: parameter values must be quoted if you want strings (and not XPath entries) -->
@@ -52,13 +51,11 @@
         <div id="orcid_data">
             <xsl:if test="$display_header='yes'">
                 <div id="orcid_header">
-                        <xsl:value-of
-                                select="record:record/person:person/person:name/personal-details:given-names"/>
-                        <xsl:text> </xsl:text>
-                        <xsl:value-of
-                                select="record:record/person:person/person:name/personal-details:family-name"/>
-                        <xsl:text> </xsl:text>
-                        ORCID Profile
+                    <xsl:value-of select="record:record/person:person/person:name/personal-details:given-names"/>
+                    <xsl:text></xsl:text>
+                    <xsl:value-of select="record:record/person:person/person:name/personal-details:family-name"/>
+                    <xsl:text></xsl:text>
+                    ORCID Profile
                 </div>
             </xsl:if>
 
@@ -144,8 +141,7 @@
                             <th>URL</th>
                         </tr>
                         <xsl:if test="record:record/person:person/researcher-url:researcher-urls/researcher-url:researcher-url">
-                            <xsl:for-each
-                                    select="record:record/person:person/researcher-url:researcher-urls/researcher-url:researcher-url">
+                            <xsl:for-each select="record:record/person:person/researcher-url:researcher-urls/researcher-url:researcher-url">
                                 <tr>
                                     <td>
                                         <xsl:value-of select="researcher-url:url-name"/>
@@ -357,8 +353,7 @@
                                                     <th>Value</th>
                                                     <th>URL</th>
                                                 </tr>
-                                                <xsl:for-each
-                                                        select="work:work-summary/common:external-ids/common:external-id">
+                                                <xsl:for-each select="work:work-summary/common:external-ids/common:external-id">
                                                     <tr>
                                                         <td>
                                                             <xsl:value-of select="common:external-id-type"/>
@@ -490,31 +485,218 @@
 
             <!-- START: invited_positions -->
             <xsl:if test="$display_invited_positions='yes'">
-                <div><h3>Invited Positions (placeholder)</h3></div>
+                <div>Invited Positions</div>
+                <div>
+                    <table border="1">
+                        <tr bgcolor="#9acd32">
+                            <th>Department Name</th>
+                            <th>Start Year</th>
+                            <th>Organization</th>
+                            <th>URL</th>
+                        </tr>
+                        <xsl:if test="record:record/activities:activities-summary/activities:invited-positions/activities:affiliation-group">
+                            <xsl:for-each
+                                    select="record:record/activities:activities-summary/activities:invited-positions/activities:affiliation-group">
+                                <tr>
+                                    <td>
+                                        <xsl:value-of
+                                                select="invited-position:invited-position-summary/common:department-name"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of
+                                                select="invited-position:invited-position-summary/common:start-date/common:year"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of
+                                                select="invited-position:invited-position-summary/common:organization/common:name"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="invited-position:invited-position-summary/common:url"/>
+                                    </td>
+                                </tr>
+                            </xsl:for-each>
+                        </xsl:if>
+                    </table>
+                </div>
             </xsl:if>
             <!-- END: invited_positions -->
 
             <!-- START: memberships -->
             <xsl:if test="$display_memberships='yes'">
-                <div><h3>Memberships (placeholder)</h3></div>
+                <div>Memberships</div>
+                <div>
+                    <table border="1">
+                        <tr bgcolor="#9acd32">
+                            <th>Department Name</th>
+                            <th>Start Year</th>
+                            <th>Organization</th>
+                            <th>URL</th>
+                        </tr>
+                        <xsl:if test="record:record/activities:activities-summary/activities:memberships/activities:affiliation-group">
+                            <xsl:for-each
+                                    select="record:record/activities:activities-summary/activities:memberships/activities:affiliation-group">
+                                <tr>
+                                    <td>
+                                        <xsl:value-of select="membership:membership-summary/common:department-name"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of
+                                                select="membership:membership-summary/common:start-date/common:year"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of
+                                                select="membership:membership-summary/common:organization/common:name"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="membership:membership-summary/common:url"/>
+                                    </td>
+                                </tr>
+                            </xsl:for-each>
+                        </xsl:if>
+                    </table>
+                </div>
             </xsl:if>
             <!-- END: memberships -->
 
             <!-- START: qualifications -->
             <xsl:if test="$display_qualifications='yes'">
-                <div><h3>Qualifications (placeholder)</h3></div>
+                <div>Qualifications</div>
+                <div>
+                    <table border="1">
+                        <tr bgcolor="#9acd32">
+                            <th>Department Name</th>
+                            <th>Start Year</th>
+                            <th>Organization</th>
+                            <th>URL</th>
+                        </tr>
+                        <xsl:if test="record:record/activities:activities-summary/activities:qualifications/activities:affiliation-group">
+                            <xsl:for-each
+                                    select="record:record/activities:activities-summary/activities:qualifications/activities:affiliation-group">
+                                <tr>
+                                    <td>
+                                        <xsl:value-of
+                                                select="qualification:qualification-summary/common:department-name"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of
+                                                select="qualification:qualification-summary/common:start-date/common:year"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of
+                                                select="qualification:qualification-summary/common:organization/common:name"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="qualification:qualification-summary/common:url"/>
+                                    </td>
+                                </tr>
+                            </xsl:for-each>
+                        </xsl:if>
+                    </table>
+                </div>
             </xsl:if>
-            <!-- END: invited_positions -->
+            <!-- END: qualificationss -->
 
             <!-- START: research_resources -->
+            <!--
+                we have an issue here: it's not clear if there can be MULTIPLE <activities:group>
+
+                we do know that there can be MULTIPLE <research-resource:research-resource-summary> within any <activities:group>
+            -->
             <xsl:if test="$display_research_resources='yes'">
-                <div><h3>Research Resources (placeholder)</h3></div>
+                <div>Research Resources</div>
+                <div>
+                    <table border="1">
+                        <tr bgcolor="#9acd32">
+                            <th>Title</th>
+                            <!--
+                            <th>Organization</th>
+                            -->
+                            <th>Start Year</th>
+                            <th>End Year</th>
+                            <th>URL</th>
+                        </tr>
+                        <!-- START LOOP on <activities:group> -->
+                        <xsl:if test="record:record/activities:activities-summary/activities:research-resources/activities:group">
+                            <xsl:for-each
+                                    select="record:record/activities:activities-summary/activities:research-resources/activities:group">
+                                <!-- <tr><td>INSIDE 1st FOR LOOP</td></tr> -->
+                                <!-- START 2ND LOOP on <research-resource:research-resource-summary> -->
+                                <xsl:if test="research-resource:research-resource-summary">
+                                    <xsl:for-each select="research-resource:research-resource-summary">
+
+                                        <!-- -->
+                                        <tr>
+                                            <td>
+                                                <xsl:value-of
+                                                        select="research-resource:proposal/research-resource:title/common:title"/>
+                                            </td>
+                                            <!-- the <research-resource:hosts> can contain multiple organizations -->
+                                            <td>
+                                                <xsl:if test="research-resource:proposal/research-resource:hosts/common:organization">
+                                                    <xsl:for-each
+                                                            select="research-resource:proposal/research-resource:hosts/common:organization">
+                                                        <xsl:value-of select="common:name"/>
+                                                        <br/>
+                                                    </xsl:for-each>
+                                                </xsl:if>
+                                            </td>
+                                            <td>
+                                                <xsl:value-of
+                                                        select="research-resource:proposal/common:start-date/common:year"/>
+                                            </td>
+                                            <td>
+                                                <xsl:value-of
+                                                        select="research-resource:proposal/common:end-date/common:year"/>
+                                            </td>
+                                            <td>
+                                                <xsl:value-of select="research-resource:proposal/common:url"/>
+                                            </td>
+                                        </tr>
+
+                                        <!-- -->
+                                    </xsl:for-each>
+                                </xsl:if>
+                                <!-- END 2ND LOOP on <research-resource:research-resource-summary> -->
+                            </xsl:for-each>
+                        </xsl:if>
+                        <!-- END LOOP on <activities:group> -->
+                    </table>
+                </div>
             </xsl:if>
             <!-- END: research_resources -->
 
             <!-- START: services -->
             <xsl:if test="$display_services='yes'">
-                <div><h3>Services (placeholder)</h3></div>
+                <div>Services</div>
+                <div>
+                    <table border="1">
+                        <tr bgcolor="#9acd32">
+                            <th>Department Name</th>
+                            <th>Start Year</th>
+                            <th>Organization</th>
+                            <th>URL</th>
+                        </tr>
+                        <xsl:if test="record:record/activities:activities-summary/activities:services/activities:affiliation-group">
+                            <xsl:for-each
+                                    select="record:record/activities:activities-summary/activities:services/activities:affiliation-group">
+                                <tr>
+                                    <td>
+                                        <xsl:value-of select="service:service-summary/common:department-name"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="service:service-summary/common:start-date/common:year"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="service:service-summary/common:organization/common:name"/>
+                                    </td>
+                                    <td>
+                                        <xsl:value-of select="service:service-summary/common:url"/>
+                                    </td>
+                                </tr>
+                            </xsl:for-each>
+                        </xsl:if>
+                    </table>
+                </div>
             </xsl:if>
             <!-- END: services -->
 
