@@ -7,7 +7,7 @@ include_once( plugin_dir_path( __FILE__ ) . 'config.php');
  * @param string $orcid_id - ORCiD ID
  * @return string $orcid_xml
  */
-function download_orcid_data($orcid_id){
+function orcid_download_data($orcid_id){
     $orcid_link = ORCID_URL . $orcid_id;
 
     $ch = curl_init();
@@ -33,7 +33,7 @@ function download_orcid_data($orcid_id){
  * @param array $display_sections - which sections of orcid data to display
  * @return string orcid_html
  */
-function format_orcid_data_as_html($orcid_xml, $display_sections){
+function orcid_format_data_as_html($orcid_xml, $display_sections){
     $xml_doc = new DOMDocument();
     $xml_doc->loadXML($orcid_xml);
 
@@ -112,7 +112,7 @@ function orcid_data_function($atts) {
 	if($download_from_orcid_flag) {
 		// return '<p>Downloading XML data from orcid.org</p>' . PHP_EOL;
 		$orcid_id = get_user_meta($author, '_orcid_id', TRUE);
-		$orcid_xml = download_orcid_data($orcid_id);
+		$orcid_xml = orcid_download_data($orcid_id);
 		update_user_meta($author, '_orcid_xml', $orcid_xml);
 		//
 		// keep track of when download occurred
@@ -190,7 +190,7 @@ function orcid_data_function($atts) {
 	}
 	//
 	// format as HTML
-	$orcid_html = format_orcid_data_as_html($orcid_xml, $display_sections);
+	$orcid_html = orcid_format_data_as_html($orcid_xml, $display_sections);
 	$return_string = $orcid_html;
 
 	return $return_string;
