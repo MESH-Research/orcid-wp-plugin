@@ -101,8 +101,7 @@ function orcid_settings_form() {
 		if ( isset( $_POST['orcid_id'] ) ) {
 			$orcid_id = $_POST['orcid_id'];
 		} else {
-			//$orcid_id = '';
-			$orcid_id = get_user_meta( $user, '_orcid_id', true );
+			$orcid_id = '';
 		}
 		//
 		// we can either download the data from orcid.org OR use the cached value
@@ -117,6 +116,8 @@ function orcid_settings_form() {
 		$orcid_id_db = get_user_meta( $user, '_orcid_id', true );
 		if ( $orcid_id !== $orcid_id_db ) {
 			$download_from_orcid_flag = true;
+			// save new value
+			update_user_meta($user, '_orcid_id', $orcid_id);
 		}
 		//
 		// 2) there is no cached xml data
@@ -134,8 +135,15 @@ function orcid_settings_form() {
 		if ( $time_diff >= ORCID_CACHE_TIMEOUT ) {
 			$download_from_orcid_flag = true;
 		}
+		//
+        // we EITHER previously saved the orcid_id as metadata
+        // OR we are taking the value from the database
+		$orcid_id = get_user_meta($user, '_orcid_id', TRUE);
+
 	}
 	?>
+    <!-- $orcid_id = get_user_meta( $user, '_orcid_id', true ); -->
+
     <div class="wrap">
         <h2>ORCiD Profile Settings</h2>
         <form method="POST" id="orcidForm">
