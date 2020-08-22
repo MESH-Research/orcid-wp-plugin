@@ -85,6 +85,9 @@ function orcid_create_menu() {
 function orcid_settings_form() {
 	$user_ob = wp_get_current_user();
 	$user    = $user_ob->ID;
+    if (!empty(get_user_meta( $user, '_orcid_id', true ))) {
+	    $orcid_id = get_user_meta( $user, '_orcid_id', true );
+    }
 	//=================================================
 	$download_from_orcid_flag = false;
 	//=================================================
