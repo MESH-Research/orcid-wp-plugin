@@ -73,6 +73,20 @@
                         <h4>
                             <div>Name Information</div>
                         </h4>
+                        <xsl:choose>
+                            <xsl:when test="record:record/person:person/person:name/personal-details:credit-name">
+                                <xsl:value-of
+                                        select="record:record/person:person/person:name/personal-details:credit-name"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of
+                                        select="record:record/person:person/person:name/personal-details:given-names"/>
+                                <xsl:text>&#160;</xsl:text>
+                                <xsl:value-of
+                                        select="record:record/person:person/person:name/personal-details:family-name"/>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        <!--
                         <table border="1">
                             <tr bgcolor="#9acd32">
                                 <th>Field</th>
@@ -97,6 +111,7 @@
                                 </td>
                             </tr>
                         </table>
+                        -->
                     </xsl:if>
                 </div>
 
