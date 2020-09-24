@@ -30,10 +30,10 @@ function orcid_download_data($orcid_id){
  *
  * parameters:
  * @param string $orcid_xml - XML as string
- * @param array $display_sections - which sections of orcid data to display
+ * @param array $display_parameters - which sections of orcid data to display
  * @return string orcid_html
  */
-function orcid_format_data_as_html($orcid_xml, $display_sections){
+function orcid_format_data_as_html($orcid_xml, $display_parameters){
     $xml_doc = new DOMDocument();
     $xml_doc->loadXML($orcid_xml);
 
@@ -44,19 +44,23 @@ function orcid_format_data_as_html($orcid_xml, $display_sections){
 
     //
     // control which sections are displayed
-	$html_doc->setParameter('', 'display_header', $display_sections['display_header']);
+	$html_doc->setParameter('', 'display_header', $display_parameters['display_header']);
 	// $html_doc->setParameter('', 'display_header', 'yes');
-	$html_doc->setParameter('', 'display_personal', $display_sections['display_personal']);
-    $html_doc->setParameter('', 'display_education', $display_sections['display_education']);
-    $html_doc->setParameter('', 'display_employment', $display_sections['display_employment']);
-    $html_doc->setParameter('', 'display_works', $display_sections['display_works']);
-    $html_doc->setParameter('', 'display_fundings', $display_sections['display_fundings']);
-	$html_doc->setParameter('', 'display_peer_reviews', $display_sections['display_peer_reviews']);
-	$html_doc->setParameter('', 'display_invited_positions', $display_sections['display_invited_positions']);
-	$html_doc->setParameter('', 'display_memberships', $display_sections['display_memberships']);
-	$html_doc->setParameter('', 'display_qualifications', $display_sections['display_qualifications']);
-	$html_doc->setParameter('', 'display_research_resources', $display_sections['display_research_resources']);
-	$html_doc->setParameter('', 'display_services', $display_sections['display_services']);
+	$html_doc->setParameter('', 'display_personal', $display_parameters['display_personal']);
+    $html_doc->setParameter('', 'display_education', $display_parameters['display_education']);
+    $html_doc->setParameter('', 'display_employment', $display_parameters['display_employment']);
+    //
+	$html_doc->setParameter('', 'display_works', $display_parameters['display_works']);
+	$html_doc->setParameter('', 'works_type', $display_parameters['works_type']);
+	$html_doc->setParameter('', 'works_start_year', $display_parameters['works_start_year']);
+	//
+	$html_doc->setParameter('', 'display_fundings', $display_parameters['display_fundings']);
+	$html_doc->setParameter('', 'display_peer_reviews', $display_parameters['display_peer_reviews']);
+	$html_doc->setParameter('', 'display_invited_positions', $display_parameters['display_invited_positions']);
+	$html_doc->setParameter('', 'display_memberships', $display_parameters['display_memberships']);
+	$html_doc->setParameter('', 'display_qualifications', $display_parameters['display_qualifications']);
+	$html_doc->setParameter('', 'display_research_resources', $display_parameters['display_research_resources']);
+	$html_doc->setParameter('', 'display_services', $display_parameters['display_services']);
 
     $html_doc->importStylesheet($xsl_doc);
     $orcid_html =  $html_doc->transformToXML($xml_doc);
@@ -68,17 +72,28 @@ function orcid_format_data_as_html($orcid_xml, $display_sections){
  * Call back function for shortword [orcid-data section="section_name"]
  *
  * parameters:
- * @param array $atts - contains the name of the section to display. if none is specified the header line is displayed
+ * @param array $atts - contains the display configuration parameters
  * @return string shortcode value
  *
  */
-function orcid_data_function($atts) {
+function orcid_data_function( $atts = [], $content = null, $tag = '' ) {
+	// normalize attribute keys, lowercase
+	$atts = array_change_key_case( (array) $atts, CASE_LOWER );
+
 	//
-	// which section of the orcid data to display.
-	//if no section is specified display the header by default
-	extract(shortcode_atts(array('section' => 'header',), $atts));
+	// override default attributes with user attributes
+	// extract() converts a dictionary to a set of variables
 	//
-	// now we want to display the *author's* (not the viewer's) data
+	// section: which section of the orcid data to display.
+	// if no section is specified display the header by default
+	extract( shortcode_atts(
+		array(
+			'section'          => 'header',
+			'works_type'       => 'all',
+			'works_start_year' => '1900',
+		), $atts ) );
+	//
+	// now we want to display the *AUTHOR's* (NOT the viewer's) data
 
 	//
 	// get the author's WordPress user id
@@ -129,68 +144,72 @@ function orcid_data_function($atts) {
 	//
 	// determine which section to display
 	if ($section == 'header') {
-		$display_sections['display_header'] = 'yes';
+		$display_parameters['display_header'] = 'yes';
 	} else {
-		$display_sections['display_header'] = 'no';
+		$display_parameters['display_header'] = 'no';
 	}
 	if ($section == 'personal') {
-		$display_sections['display_personal'] = 'yes';
+		$display_parameters['display_personal'] = 'yes';
 	} else {
-		$display_sections['display_personal'] = 'no';
+		$display_parameters['display_personal'] = 'no';
 	}
 	if ($section == 'education') {
-		$display_sections['display_education'] = 'yes';
+		$display_parameters['display_education'] = 'yes';
 	} else {
-		$display_sections['display_education'] = 'no';
+		$display_parameters['display_education'] = 'no';
 	}
 	if ($section == 'employment') {
-		$display_sections['display_employment'] = 'yes';
+		$display_parameters['display_employment'] = 'yes';
 	} else {
-		$display_sections['display_employment'] = 'no';
+		$display_parameters['display_employment'] = 'no';
 	}
 	if ($section == 'works') {
-		$display_sections['display_works'] = 'yes';
+		$display_parameters['display_works'] = 'yes';
+		$display_parameters['works_type'] = $works_type;
+		$display_parameters['works_start_year'] = $works_start_year;
 	} else {
-		$display_sections['display_works'] = 'no';
+		$display_parameters['display_works'] = 'no';
+		$display_parameters['works_type'] = 'none';
+		$display_parameters['works_start_year'] = '3000';
 	}
 	if ($section == 'fundings') {
-		$display_sections['display_fundings'] = 'yes';
+		$display_parameters['display_fundings'] = 'yes';
 	} else {
-		$display_sections['display_fundings'] = 'no';
+		$display_parameters['display_fundings'] = 'no';
 	}
 	if ($section == 'peer_reviews') {
-		$display_sections['display_peer_reviews'] = 'yes';
+		$display_parameters['display_peer_reviews'] = 'yes';
 	} else {
-		$display_sections['display_peer_reviews'] = 'no';
+		$display_parameters['display_peer_reviews'] = 'no';
 	}
 	if ($section == 'invited_positions') {
-		$display_sections['display_invited_positions'] = 'yes';
+		$display_parameters['display_invited_positions'] = 'yes';
 	} else {
-		$display_sections['display_invited_positions'] = 'no';
+		$display_parameters['display_invited_positions'] = 'no';
 	}
 	if ($section == 'memberships') {
-		$display_sections['display_memberships'] = 'yes';
+		$display_parameters['display_memberships'] = 'yes';
 	} else {
-		$display_sections['display_memberships'] = 'no';
+		$display_parameters['display_memberships'] = 'no';
 	}
 	if ($section == 'qualifications') {
-		$display_sections['display_qualifications'] = 'yes';
+		$display_parameters['display_qualifications'] = 'yes';
 	} else {
-		$display_sections['display_qualifications'] = 'no';
+		$display_parameters['display_qualifications'] = 'no';
 	}
 	if ($section == 'research_resources') {
-		$display_sections['display_research_resources'] = 'yes';
+		$display_parameters['display_research_resources'] = 'yes';
 	} else {
-		$display_sections['display_research_resources'] = 'no';
+		$display_parameters['display_research_resources'] = 'no';
 	}
 	if ($section == 'services') {
-		$display_sections['display_services'] = 'yes';
+		$display_parameters['display_services'] = 'yes';
 	} else {
-		$display_sections['display_services'] = 'no';
+		$display_parameters['display_services'] = 'no';
 	}
 	//
 	// format as HTML
-	$orcid_html = orcid_format_data_as_html($orcid_xml, $display_sections);
+	$orcid_html = orcid_format_data_as_html($orcid_xml, $display_parameters);
 	$return_string = $orcid_html;
 
 	return $return_string;
