@@ -85,9 +85,9 @@ function orcid_create_menu() {
 function orcid_settings_form() {
 	$user_ob = wp_get_current_user();
 	$user    = $user_ob->ID;
-    if (!empty(get_user_meta( $user, '_orcid_id', true ))) {
-	    $orcid_id = get_user_meta( $user, '_orcid_id', true );
-    }
+	if ( ! empty( get_user_meta( $user, '_orcid_id', true ) ) ) {
+		$orcid_id = get_user_meta( $user, '_orcid_id', true );
+	}
 	//=================================================
 	$download_from_orcid_flag = false;
 	//=================================================
@@ -120,7 +120,7 @@ function orcid_settings_form() {
 		if ( $orcid_id !== $orcid_id_db ) {
 			$download_from_orcid_flag = true;
 			// save new value
-			update_user_meta($user, '_orcid_id', $orcid_id);
+			update_user_meta( $user, '_orcid_id', $orcid_id );
 		}
 		//
 		// 2) there is no cached xml data
@@ -139,9 +139,9 @@ function orcid_settings_form() {
 			$download_from_orcid_flag = true;
 		}
 		//
-        // we EITHER previously saved the orcid_id as metadata
-        // OR we are taking the value from the database
-		$orcid_id = get_user_meta($user, '_orcid_id', TRUE);
+		// we EITHER previously saved the orcid_id as metadata
+		// OR we are taking the value from the database
+		$orcid_id = get_user_meta( $user, '_orcid_id', true );
 
 	}
 	?>
@@ -192,6 +192,8 @@ function orcid_settings_form() {
 	$display_sections['display_education']          = 'yes';
 	$display_sections['display_employment']         = 'yes';
 	$display_sections['display_works']              = 'yes';
+	$display_sections['works_type']                 = 'all';
+	$display_sections['works_start_year']           = '1900';
 	$display_sections['display_fundings']           = 'yes';
 	$display_sections['display_peer_reviews']       = 'yes';
 	$display_sections['display_invited_positions']  = 'yes';
