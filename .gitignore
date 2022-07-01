@@ -3,3 +3,6 @@
 #
 # all server error_log files
 error_log
+
+# editors and ides
+*.code-workspace
